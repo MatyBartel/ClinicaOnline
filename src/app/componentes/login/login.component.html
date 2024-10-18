@@ -1,24 +1,30 @@
-<form (ngSubmit)="onSubmit()" #loginForm="ngForm"> 
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<div class="login-container">
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <div class="titulo">
+      INICIO DE SESION
+    </div>
 
-  <div class="titulo">
-    ¡COMENZÁ A JUGAR!
-  </div>
+    <div class="input-container">
+      <img src="https://firebasestorage.googleapis.com/v0/b/salajuegos-bartel.appspot.com/o/UsuarioTP.png?alt=media&token=f606b71b-33eb-434c-8370-4e20b3279a31" alt="Usuario" class="input-icon">
+      <input id="username" [(ngModel)]="username" name="username" required type="text" placeholder="Correo">
+    </div>
 
-  <div class="input-container">
-    <img src="https://firebasestorage.googleapis.com/v0/b/salajuegos-bartel.appspot.com/o/UsuarioTP.png?alt=media&token=f606b71b-33eb-434c-8370-4e20b3279a31" alt="Usuario" class="input-icon"> 
-    <input id="username" [(ngModel)]="username" name="username" required type="text" placeholder="Correo">
-  </div>
+    <div class="input-container">
+      <img src="https://firebasestorage.googleapis.com/v0/b/salajuegos-bartel.appspot.com/o/Candadito.png?alt=media&token=9a332aa8-7242-4b21-a586-f4dc7d69c85a" alt="Candado" class="input-icon">
+      <input id="password" [(ngModel)]="password" name="password" required type="password" placeholder="Contraseña">
+    </div>
 
-  <div class="input-container">
-    <img src="https://firebasestorage.googleapis.com/v0/b/salajuegos-bartel.appspot.com/o/Candadito.png?alt=media&token=9a332aa8-7242-4b21-a586-f4dc7d69c85a" alt="Candado" class="input-icon">
-    <input id="password" [(ngModel)]="password" name="password" required type="password" placeholder="Contraseña">
-  </div>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
 
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
-  </div>
+    <div class="buttons-container">
+      <button type="submit">INICIAR SESION</button>
+    </div>
 
-  <button type="submit">Iniciar sesión</button>
-  <button type="button" (click)="fillFields()" alt="Rellenar" class="rellenar-campos">Rellenar Campos</button>
-</form>
+    <div class="quick-access">
+      <button type="button" (click)="fillAdmin()">ADMIN</button>
+      <button type="button" (click)="fillEmpleado()">EMPLEADO</button>
+    </div>
+  </form>
+</div>

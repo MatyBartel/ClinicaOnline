@@ -24,16 +24,23 @@ export class LoginComponent {
 
   constructor(private router: Router) {}
 
-  fillFields() {
-    this.username = 'prop@prop.com';
-    this.password = '123456';
+  // Función para autocompletar campos para Admin
+  fillAdmin() {
+    this.username = 'admin@correo.com';
+    this.password = 'admin123';
+  }
+
+  // Función para autocompletar campos para Empleado
+  fillEmpleado() {
+    this.username = 'empleado@correo.com';
+    this.password = 'empleado';
   }
 
   async onSubmit() {
     try {
       const userCredential = await signInWithEmailAndPassword(this.auth, this.username, this.password);
       this.loginStatusChange.emit(true); 
-      this.router.navigate(['/home']);
+      this.router.navigate(['/home']); 
     } catch (error: any) {
       switch (error.code) {
         case 'auth/invalid-credential':

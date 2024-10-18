@@ -1,12 +1,14 @@
 import { initializeApp } from "firebase/app";
 
+// Your web app's Firebase configuration
 export const firebaseConfig = {
-  apiKey: "AIzaSyDwWtnrBJsAhV_bpBgDDtJOH4ApwmFHfVw",
-  authDomain: "salajuegos-bartel.firebaseapp.com",
-  projectId: "salajuegos-bartel",
-  storageBucket: "salajuegos-bartel.appspot.com",
-  messagingSenderId: "500772714952",
-  appId: "1:500772714952:web:203ffc93567f0feb75e8fd"
+  apiKey: "AIzaSyAYjraUOfAcEzoouAFEsc1yyFqF4fqx7-c",
+  authDomain: "pp-labo-iv----bartel.firebaseapp.com",
+  projectId: "pp-labo-iv----bartel",
+  storageBucket: "pp-labo-iv----bartel.appspot.com",
+  messagingSenderId: "483106802513",
+  appId: "1:483106802513:web:3b6f0b00ea7e3ffa6ea170"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);

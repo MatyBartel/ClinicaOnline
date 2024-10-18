@@ -1,13 +1,12 @@
 <div class="nav">
     <div class="button-group">
         <button routerLink="home" routerLinkActive="active-route">INICIO</button>
-        <button routerLink="about" routerLinkActive="active-route">¿QUIÉN SOY?</button>
+        <button routerLink="altaChofer" routerLinkActive="active-route">ALTA CHOFER</button>
     </div>
     <div class="login-button-container" *ngIf="!isLoggedIn">
         <button routerLink="login" routerLinkActive="active-route">INICIAR SESION</button>
     </div>
     <div class="register-button-container" *ngIf="!isLoggedIn">
-        <button routerLink="registro" routerLinkActive="active-route">REGISTRARSE</button>
     </div>
     <div class="logout-button-container" *ngIf="isLoggedIn"> 
         <button (click)="logout()">CERRAR SESION</button>
@@ -19,7 +18,6 @@
 </div>
 
 <div class="form-container">
-    <app-registro *ngIf="router.url === '/registro'" (loginStatusChange)="setLoginStatus($event)"></app-registro>
     <app-login *ngIf="router.url === '/login'" (loginStatusChange)="setLoginStatus($event)"></app-login>
 </div>
 

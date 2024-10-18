@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "tpsaladejuegos": {
+    "pplaboiv-bartel": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/tpsaladejuegos",
+            "outputPath": "dist/pplaboiv-bartel",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -57,10 +57,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "tpsaladejuegos:build:production"
+              "buildTarget": "pplaboiv-bartel:build:production"
             },
             "development": {
-              "buildTarget": "tpsaladejuegos:build:development"
+              "buildTarget": "pplaboiv-bartel:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -68,7 +68,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "tpsaladejuegos:build"
+            "buildTarget": "pplaboiv-bartel:build"
           }
         },
         "test": {

@@ -1,0 +1,26 @@
+.paises-container {
+    margin: 20px 0;
+}
+
+.paises-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+.paises-container li {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    transition: background-color 0.2s;
+}
+
+.paises-container li:hover {
+    background-color: #f0f0f0;
+}
+
+.bandera {
+    width: 30px;
+    height: auto;
+    margin-right: 10px;
+}

@@ -1,62 +1,87 @@
-form {
-    max-width: 400px; 
-    margin: 130px auto;
+body {
+    background: linear-gradient(to right, #74ebd5, #ACB6E5); /* Degradado como fondo */
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-container {
+    max-width: 500px;
+    width: 100%;
     padding: 60px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
-    background-color: #ffffff;
-    font-family: 'Roboto';
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); /* Sombra para destacar el panel */
+    text-align: center;
+}
+
+form {
+    width: 100%;
 }
 
 .titulo {
     text-align: center;
-    font-size: 35px;
+    font-size: 30px;
     font-weight: bold;
-    color: #4CAF50; 
-    margin-bottom: 30px;
+    color: #4CAF50;
+    margin-bottom: 40px;
     text-transform: uppercase;
 }
 
 .input-container {
-    display: flex; 
-    align-items: center; 
-    margin-bottom: 15px
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px; 
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 8px;
 }
 
 .input-icon {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
+    width: 35px;
+    height: 35px;
+    margin-right: 15px;
 }
 
 input[type="text"],
 input[type="password"] {
-    width: 80%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box; 
-    font-size: 16px; 
+    flex: 1;
+    padding: 12px;
+    border: none;
+    font-size: 16px;
+    background-color: transparent;
 }
 
 input[type="text"]:focus,
 input[type="password"]:focus {
-    border-color: #4CAF50; 
-    outline: none; 
+    border: none;
+    outline: none;
+}
+
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
 button {
-    width: 100%; 
     background-color: #4CAF50;
-    color: white; 
-    padding: 12px;
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer; 
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     font-size: 16px;
-    margin-top: 10px;
-    transition: background-color 0.3s, transform 0.2s; 
+    width: 100%;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 button:hover {
@@ -67,38 +92,17 @@ button:active {
     transform: scale(0.95);
 }
 
-.error-message {
-    color: red; 
-    font-size: 14px;
-    margin-top: -10px; 
-    margin-bottom: 15px;
+.quick-access {
+    display: flex;
+    justify-content: space-between; 
+    margin-top: 15px;
 }
 
-a {
-    color: #4CAF50;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-.rellenar-campos {
-    width: 50%;
+.quick-access button {
+    width: 48%; /* Para que ambos botones ocupen el mismo espacio en la línea */
     background-color: #6e6e6e;
-    color: white; 
-    padding: 10px;
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    font-size: 14px;
-    margin: 10px auto;
-    display: block;
-    transition: background-color 0.3s, transform 0.2s;
 }
 
-.rellenar-campos:hover {
+.quick-access button:hover {
     background-color: #454545;
-    transform: scale(1.05);
 }

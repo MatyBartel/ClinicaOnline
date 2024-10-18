@@ -1,88 +1,33 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common'; 
-import { getAuth } from "firebase/auth";
-import { initializeApp } from "firebase/app";
-import { firebaseConfig } from '../../../firebaseConfig';
-import { Firestore, collection, addDoc, query, orderBy, onSnapshot } from "firebase/firestore";
-import { getFirestore } from "firebase/firestore"; 
-import { Router, RouterModule } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterModule],
+  imports: [CommonModule, HttpClientModule],  // Importamos los módulos necesarios aquí
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  message: string = '';
-  messages: { user: string, text: string }[] = [];
-  username: string = '';
-  isLoggedIn: boolean = false;
+  githubData: any = null;
 
-  app = initializeApp(firebaseConfig);
-  auth = getAuth(this.app);
-  db: Firestore = getFirestore(this.app);
+  constructor(private http: HttpClient) {}
 
-  @ViewChild('chatContainer') chatContainer!: ElementRef;
-
-  constructor(private router: Router) {}
-
-  ngOnInit() {
-    this.checkUserStatus();
-    this.listenToMessages();
+  ngOnInit(): void {
+    this.obtenerDatosGithub();
   }
 
-  checkUserStatus() {
-    const user = this.auth.currentUser;
-    this.isLoggedIn = !!user; 
-    if (user && user.email) {
-      this.username = user.email; 
-    } else {
-      this.username = ''; 
-    }
-  }
-
-  // Métodos Chat
-  async sendMessage() {
-    if (this.message.trim() && this.isLoggedIn) {
-      try {
-        await addDoc(collection(this.db, 'chats'), {
-          user: this.username,
-          text: this.message,
-          timestamp: new Date() 
-        });
-        this.message = ''; 
-        this.scrollToBottom();
-      } catch (e) {
-        console.error("Error al agregar mensaje: ", e);
+  obtenerDatosGithub() {
+    const githubUsername = 'MatyBartel'; // Cambia el usuario si es necesario
+    this.http.get(`https://api.github.com/users/${githubUsername}`).subscribe(
+      (data) => {
+        this.githubData = data;
+      },
+      (error) => {
+        console.error('Error al obtener los datos de GitHub', error);
       }
-    }
-  }
-
-  listenToMessages() {
-    const q = query(collection(this.db, 'chats'), orderBy('timestamp'));
-    onSnapshot(q, (querySnapshot) => {
-      this.messages = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        this.messages.push({ user: data['user'], text: data['text'] });
-      });
-      this.scrollToBottom(); 
-    });
-  }
-
-  private scrollToBottom(): void {
-    const chatContainer = document.querySelector('.chat-messages');
-    if (chatContainer) {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-  }
-
-  navegarAGrupo(juego: string) {
-    if (this.isLoggedIn) {
-      this.router.navigate([`/${juego}`]); 
-    }
+    );
   }
 }

@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "salajuegos-bartel"
-  }
+    "default": "pplaboiv-bartel",
+    "pplaboiv-bartel": "pp-labo-iv----bartel"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }
