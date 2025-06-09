@@ -1,9 +1,5 @@
 {
   "projects": {
-    "default": "pplaboiv-bartel",
-    "pplaboiv-bartel": "pp-labo-iv----bartel"
-  },
-  "targets": {},
-  "etags": {},
-  "dataconnectEmulatorConfig": {}
+    "default": "tpclinica-bartel"
+  }
 }

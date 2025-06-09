@@ -1,73 +1,63 @@
-
 body {
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    height: 100vh;
-  }
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh; /* Permite que el contenido supere la altura de la ventana */
+  overflow-x: hidden; 
   
-  .form-container {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-top: 50px;
-  }
-  .form-container1 {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    margin-top: 50px;
-  }
-  .login-button-container {
-    position: absolute;
-    top: 10px;
-    right: 50px;
-  }
-
-  .logout-button-container {
-    position: absolute;
-    top: 10px;
-    right: 50px;
-  }
-
-  .register-button-container {
-    position: absolute;
-    top: 10px;
-    right: 250px;
-  }
-
-  .button-group {
-    position:relative;
-    top: 10px;
-    left: 50px;
-  }
-
-button {
-    padding: 10px 15px;
-    border: none;
-    cursor: pointer;
-    background-color: white;
-    margin: 0 10px;
-    color:rgb(0, 0, 0);
-    font-size: 20px;
 }
 
-  button:hover {
-    color:rgb(0, 138, 92)
-  }
+.form-container,
+.form-container1 {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 50px;
+}
 
-  .nav {
-    width: 100%;
-    background-color: white;
-    min-height: 60px; 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    display: flex;
-    font-family: 'Roboto', sans-serif;
-  }
+.login-button-container,
+.logout-button-container,
+.register-button-container {
+  position: absolute;
+  top: 10px;
+}
+
+.button-group {
+  position: relative;
+  top: 10px;
+  left: 50px;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  background-color: white;
+  margin: 0 10px;
+  color: rgb(0, 0, 0);
+  font-size: 20px;
+}
+
+button:hover {
+  color: rgb(0, 97, 138);
+}
+
+.nav {
+  width: 100%;
+  background-color: white;
+  min-height: 60px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  font-family: 'Roboto', sans-serif;
+}
+
+.no-scroll {
+  overflow-y: hidden;
+}

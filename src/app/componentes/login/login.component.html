@@ -1,30 +1,56 @@
-<div class="login-container">
-  <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-    <div class="titulo">
-      INICIO DE SESION
-    </div>
+<body>
+    <div class="login-container">
+      <h2 class="titulo">INICIAR SESION</h2>
+    
+      <form (submit)="onSubmit()">
+        <div class="input-container">
+          <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Login%2FCorreo.png?alt=media&token=19f459bf-e240-4ffb-9768-9364b4a948ec" class="input-icon" alt="user-icon">
+        <input type="text" [(ngModel)]="username" name="usuario" placeholder="Correo electrónico" required>
+      </div>
+      
+      <div class="input-container">
+        <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Login%2FCandadoW.png?alt=media&token=2f6f1f2f-4fb8-4c41-91d5-60a9ff3fa99f" class="input-icon" alt="password-icon">
+        <input type="password" [(ngModel)]="password"name="correo" placeholder="Contraseña" required>
+      </div>
+      
+      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+      
+      <div class="buttons-container">
+        <button type="submit">Iniciar Sesión</button>
+      </div>
+    </form>
+    
+    <!-- Contenedor para accesos rápidos -->
+    <div class="acceso-rapido">
+      <label for="acceso-rapido" class="acceso-rapido-label">Accesos Rápidos</label>
+      
+      <!-- Fila 1: Pacientes -->
+      <div class="acceso-rapido-row">
+        <button class="acceso-rapido-btn paciente" (click)="fillPaciente()">
+          <img src="ruta_logo_paciente1.png" alt="Paciente 1" class="logo">
+        </button>
+        <button class="acceso-rapido-btn paciente" (click)="fillPaciente()">
+          <img src="ruta_logo_paciente2.png" alt="Paciente 2" class="logo">
+        </button>
+        <button class="acceso-rapido-btn paciente" (click)="fillPaciente()">
+          <img src="ruta_logo_paciente3.png" alt="Paciente 3" class="logo">
+        </button>
+      </div>
 
-    <div class="input-container">
-      <img src="https://firebasestorage.googleapis.com/v0/b/salajuegos-bartel.appspot.com/o/UsuarioTP.png?alt=media&token=f606b71b-33eb-434c-8370-4e20b3279a31" alt="Usuario" class="input-icon">
-      <input id="username" [(ngModel)]="username" name="username" required type="text" placeholder="Correo">
+      <!-- Fila 2: Especialistas y Admin -->
+      <div class="acceso-rapido-row">
+        <button class="acceso-rapido-btn especialista" (click)="fillEspecialista()">
+          <img src="ruta_logo_especialista1.png" alt="Especialista 1" class="logo">
+        </button>
+        <button class="acceso-rapido-btn especialista" (click)="fillEspecialista()">
+          <img src="ruta_logo_especialista2.png" alt="Especialista 2" class="logo">
+        </button>
+        <button class="acceso-rapido-btn admin" (click)="fillAdmin()">
+          <img src="ruta_logo_admin.png" alt="Admin" class="logo">
+        </button>
+      </div>
+      
     </div>
-
-    <div class="input-container">
-      <img src="https://firebasestorage.googleapis.com/v0/b/salajuegos-bartel.appspot.com/o/Candadito.png?alt=media&token=9a332aa8-7242-4b21-a586-f4dc7d69c85a" alt="Candado" class="input-icon">
-      <input id="password" [(ngModel)]="password" name="password" required type="password" placeholder="Contraseña">
-    </div>
-
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </div>
-
-    <div class="buttons-container">
-      <button type="submit">INICIAR SESION</button>
-    </div>
-
-    <div class="quick-access">
-      <button type="button" (click)="fillAdmin()">ADMIN</button>
-      <button type="button" (click)="fillEmpleado()">EMPLEADO</button>
-    </div>
-  </form>
-</div>
+    <a href="/registro" class="register-link">Quiero registrarme</a>
+  </div>
+</body>

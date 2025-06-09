@@ -1,0 +1,171 @@
+<body>
+    <!-- Selección inicial de tipo de usuario -->
+    <div *ngIf="!tipoSeleccionado" class="tipo-seleccion">
+                <!-- Botón para volver al login -->
+                <button (click)="seleccionarTipo('paciente')" class="boton-tipo">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2Fpaciente.png?alt=media&token=2e59f333-e3d4-427a-bd5e-ea59472ac396" alt="Paciente">
+                    Paciente
+                </button>
+                <button (click)="seleccionarTipo('especialista')" class="boton-tipo">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2Fdoctor.png?alt=media&token=d9d6a78a-ad6a-4e8c-abd7-4a69f26fd7df" alt="Especialista">
+                    Especialista
+                </button>
+                <div class="btn-login"> 
+                    <button (click)="volverLogin()" class="btn-atras">
+                        🠔
+                    </button>
+                </div>
+    </div>
+
+    <!-- Formulario para Paciente -->
+    <form *ngIf="tipoSeleccionado === 'paciente'" (ngSubmit)="onSubmit()" #registroForm="ngForm" class="formulario">
+        <div class="titulo-form">
+            REGISTRATE COMO PACIENTE
+        </div>
+        <div class="input-container">
+            <label for="nombre">
+                <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2FUsuarioW.png?alt=media&token=335845c9-ccf3-466f-a709-8dc973648919" alt="Nombre" class="input-icon">
+            </label>
+            <input type="text" id="nombre" [(ngModel)]="nombre" name="nombre" required placeholder="Nombre del paciente">
+        </div>
+
+        <div class="input-container">
+            <label for="apellido">
+                <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fapellido.png?alt=media&token=12696ffd-50fb-4e7c-b079-90d1436f4813" alt="Apellido" class="input-icon">
+            </label>
+            <input type="text" id="apellido" [(ngModel)]="apellido" name="apellido" required placeholder="Apellido del paciente">
+        </div>
+
+        <div class="input-container">
+            <label for="edad">
+                <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fedad.png?alt=media&token=c7d04542-0fc4-4a19-8bce-de28475ce8ab" alt="Edad" class="input-icon">
+            </label>
+            <input type="number" id="edad" [(ngModel)]="edad" name="edad" required placeholder="Edad del paciente">
+        </div>
+
+        <div class="input-container">
+            <label for="dni">
+                <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fdni.png?alt=media&token=a3641431-2780-4aeb-9e29-d1b51a6b9897" alt="DNI" class="input-icon">
+            </label>
+            <input type="text" id="dni" [(ngModel)]="dni" name="dni" required placeholder="DNI del paciente">
+        </div>
+
+        <div class="input-container">
+            <label for="obraSocial">
+                <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fobrasocial.png?alt=media&token=9987738a-7bf4-47db-ac16-7d3ccd040a23" alt="Obra Social" class="input-icon">
+            </label>
+            <input type="text" id="obraSocial" [(ngModel)]="obraSocial" name="obraSocial" required placeholder="Obra social del paciente">
+        </div>
+
+        <div class="input-container">
+            <label for="correo">
+                <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2FCorreo.png?alt=media&token=893fb86d-e897-405c-9135-b92773f98cec" alt="Correo" class="input-icon">
+            </label>
+            <input type="email" id="correo" [(ngModel)]="correo" name="correo" required placeholder="Correo electrónico">
+        </div>
+
+        <div class="input-container">
+            <label for="contrasena">
+                <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2FCandadoW.png?alt=media&token=53af1ff2-1654-4f90-8585-92c8b31fd92e" alt="Contraseña" class="input-icon">
+            </label>
+            <input type="password" id="contrasena" [(ngModel)]="contrasena" name="contrasena" required placeholder="Contraseña">
+        </div>
+
+        <!-- Foto de Perfil -->
+        <div class="input-container">
+            <label for="paciente-foto-perfil" class="file-label">
+            <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Frostro.png?alt=media&token=2cbc023d-44b2-4c27-a525-32986057c50b" alt="Foto de Perfil" class="input-icon">
+            <span>Seleccione una foto de su rostro</span>
+            <input type="file" (change)="onImageSelected($event, 'paciente', 'fotoPerfil')" id="paciente-foto-perfil" accept="image/*" required>
+            </label>
+            <!-- Vista previa de la imagen seleccionada -->
+            <img *ngIf="imagenesPerfil.paciente.fotoPerfil" [src]="imagenesPerfil.paciente.fotoPerfil" alt="Vista previa" class="preview-image">
+        </div>
+        
+        <!-- Foto de Identificación -->
+        <div class="input-container">
+            <label for="paciente-foto-identificacion" class="file-label">
+            <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fdni2.png?alt=media&token=80b6649a-af88-4d5e-bde2-8412d5b93726" alt="Foto de Identificación" class="input-icon">
+            <span>Seleccione una foto de su dni</span>
+            <input type="file" (change)="onImageSelected($event, 'paciente', 'fotoPerfil2')" id="paciente-foto-identificacion" accept="image/*" required>
+            </label>
+            <!-- Vista previa de la imagen seleccionada -->
+            <img *ngIf="imagenesPerfil.paciente.fotoPerfil2" [src]="imagenesPerfil.paciente.fotoPerfil2" alt="Vista previa" class="preview-image">
+        </div>
+
+                <!-- Botón de volver atrás en el formulario -->
+                <button (click)="volverSeleccionTipo()" class="btn-atras">
+                    🠔
+                </button>
+
+        <button type="submit" class="btn btn-primary">Registrar</button>
+        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+    </form>
+
+    <!-- Formulario para Especialistas -->
+    <form *ngIf="tipoSeleccionado === 'especialista'" (ngSubmit)="onSubmit()" #registroForm="ngForm" class="formulario">
+        <div class="titulo-form">
+            REGISTRATE COMO ESPECIALISTA
+        </div>
+        <div class="input-container">
+            <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2FUsuarioW.png?alt=media&token=335845c9-ccf3-466f-a709-8dc973648919" alt="Nombre" class="input-icon">
+            <input id="nombre" [(ngModel)]="nombre" name="nombre" required type="text" placeholder="Nombre del especialista">
+        </div>
+
+        <div class="input-container">
+            <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fapellido.png?alt=media&token=12696ffd-50fb-4e7c-b079-90d1436f4813" alt="Apellido" class="input-icon">
+            <input id="apellido" [(ngModel)]="apellido" name="apellido" required type="text" placeholder="Apellido del especialista">
+        </div>
+
+        <div class="input-container">
+            <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fdni.png?alt=media&token=a3641431-2780-4aeb-9e29-d1b51a6b9897" alt="DNI" class="input-icon">
+            <input id="dni" [(ngModel)]="dni" name="dni" required type="text" placeholder="DNI del especialista">
+        </div>
+
+        <div class="input-container">
+            <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fedad.png?alt=media&token=c7d04542-0fc4-4a19-8bce-de28475ce8ab" alt="Edad" class="input-icon">
+            <input id="edad" [(ngModel)]="edad" name="edad" required type="number" placeholder="Edad del especialista">
+        </div>
+
+        <div class="input-container">
+            <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fespecialidad2.png?alt=media&token=fd641cdb-94ca-4067-a897-33552cfd4db4" alt="Especialidad" class="input-icon">
+            <select id="especialidad" [(ngModel)]="especialidadSeleccionada" name="especialidad" required placeholder="Selecciona una especialidad">
+                <option value="">Seleccione una especialidad</option>
+                <option *ngFor="let especialidad of especialidades" [value]="especialidad">{{ especialidad }}</option>
+            </select>
+        </div>
+
+        <div class="input-container" *ngIf="especialidadSeleccionada === 'otra'">
+            <img src="ruta_a_icono_especialidad.png" alt="Nueva especialidad" class="input-icon">
+            <input type="text" [(ngModel)]="nuevaEspecialidad" placeholder="Escribe la nueva especialidad">
+            <button (click)="agregarEspecialidad()">Agregar</button>
+        </div>
+
+        <div class="input-container">
+            <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2FCorreo.png?alt=media&token=893fb86d-e897-405c-9135-b92773f98cec" alt="Correo" class="input-icon">
+            <input id="correo" [(ngModel)]="correo" name="correo" required type="email" placeholder="Correo electrónico">
+        </div>
+
+        <div class="input-container">
+            <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2FCandadoW.png?alt=media&token=53af1ff2-1654-4f90-8585-92c8b31fd92e" alt="Contraseña" class="input-icon">
+            <input id="contrasena" [(ngModel)]="contrasena" name="contrasena" required type="password" placeholder="Contraseña">
+        </div>
+
+        <div class="input-container">
+            <label for="especialista-foto-perfil" class="file-label">
+                <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fimage%20(29).png?alt=media&token=7c140d4d-335f-48ef-bc99-40df2a1ed5be" alt="Especialista" class="input-icon">
+                <span>Selecciona tu imagen de perfil</span>
+                <input type="file" (change)="onImageSelected($event, 'especialista', 'fotoPerfilEsp')" id="especialista-foto-perfil" accept="image/*" required>
+            </label>
+            <img *ngIf="imagenesPerfil.especialista.fotoPerfilEsp" [src]="imagenesPerfil.especialista.fotoPerfilEsp" alt="Vista previa" class="preview-image">
+        </div>
+        <!-- Botón de volver atrás en el formulario -->
+        <button (click)="volverSeleccionTipo()" class="btn-atras">
+            🠔
+        </button>
+
+        <button type="submit" class="submit-btn">Registrar</button>
+        <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+    </form>
+</body>

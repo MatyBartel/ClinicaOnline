@@ -1,34 +1,185 @@
-/* Estilos globales */
-body {
-    background: linear-gradient(to right, #74ebd5, #ACB6E5);
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    height: 100vh;
-}
-
+/* Estilo general */
 .home-container {
-    text-align: center;
+    font-family: Arial, sans-serif;
+    color: white;
+    background-color: #1a1a2e;
     padding: 20px;
-    margin: 100px;
-    background-color: rgba(255, 255, 255, 0.9);
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+    font-family: "Roboto";
 }
 
-.github-profile {
-    margin-top: 20px;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.github-avatar {
-    width: 200px;
+.logo {
+    width: 100px;
+}
+
+.menu-icon-container {
+    position: relative;
+    display: inline-block;
+}
+
+.menu-icon {
+    cursor: pointer;
+    width: 80px;
+}
+
+/* Estilo del botón del icono del menú */
+.menu-icon-button {
+    background-color: rgb(255, 255, 255);
+    border: none;
+    cursor: pointer;
+    padding: 10px;
     border-radius: 50%;
-    margin-bottom: 15px;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
-h2 {
-    color: #000000;
+.menu-icon-button:hover {
+    background-color: #007bff; /* Fondo semitransparente al pasar */
+    transform: scale(1.1); /* Aumento leve para dar efecto de interacción */
 }
 
-h3 {
+/* Estilo de la imagen del icono */
+.menu-icon-image {
+    width: 40px;
+    height: 40px;
+    object-fit: contain; /* Asegura que la imagen mantenga sus proporciones */
+    transition: transform 0.3s; /* Suaviza el efecto de hover */
+}
+
+.menu-icon-button:hover .menu-icon-image {
+    transform: rotate(15deg); /* Pequeña rotación en hover para un efecto extra */
+}
+
+
+/* Sección de bienvenida */
+.welcome-section {
+    text-align: left;
+    margin-left: 5%;
+    margin-bottom: 50px;
+}
+
+.welcome-section h1 {
+    font-size: 36px;
     margin-bottom: 10px;
+}
+
+.welcome-section p {
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+/* Sección ¿Qué nos diferencia? */
+.differentiators-section {
+    margin-bottom: 50px;
+}
+
+
+.differentiators-section h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 20px;
+    position: relative; 
+}
+
+.differentiators-section h2::after {
+    content: "";
+    display: block;
+    width: 50px; /* Largo de la barra */
+    height: 4px; /* Grosor de la barra */
+    background-color: #00bccd; /* Color de la barra */
+    margin: 8px auto 0; /* Centrado automático y separación del texto */
+    border-radius: 2px; /* Bordes redondeados */
+}
+
+.cards-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+}
+
+.card {
+    background-color: #0f3460;
+    padding: 20px;
+    border-radius: 8px;
+    width: 30%;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.05); /* Agranda ligeramente la tarjeta al pasar el mouse */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3); /* Sombra adicional para dar profundidad */
+}
+
+/* Estilo de las imágenes de las tarjetas */
+.card-image {
+    width: 100%; /* Ocupa todo el ancho de la tarjeta */
+    height: auto; /* Mantiene la relación de aspecto */
+    border-radius: 4px; /* Bordes redondeados */
+}
+
+/* Barra informativa */
+.info-bar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #16213e;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 8px;
+}
+
+.info-item h4 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.info-item p {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+
+.footer {
+    width: 100%;
+    background-color: #1a1a2e; /* Color de fondo */
+    padding: 20px;
+    display: flex; /* Para alinear los elementos */
+    flex-direction: column; /* Para que los elementos se apilen verticalmente */
+    align-items: center; /* Centrar elementos en el eje horizontal */
+    color: rgb(255, 255, 255);
+    font-family:'Roboto';
+}
+
+.copyright {
+    margin: 0; /* Sin margen */
+    font-size: 16px; /* Tamaño de fuente del copyright */
+    text-align: center; /* Centrar el texto */
+}
+
+.contact-info {
+    display: flex; /* Flex para alineación horizontal */
+    flex-direction: column; /* Alinear verticalmente los elementos */
+    align-items: center; /* Centrar elementos dentro de contact-info */
+    margin-top: 10px; /* Espacio entre copyright y contactos */
+}
+
+.contact-info p {
+    margin: 0; /* Sin margen entre los párrafos */
+    font-size: 14px; /* Tamaño de fuente */
+}
+
+.contact-info a {
+    color: #00bcd4; /* Color del enlace */
+    text-decoration: none; /* Sin subrayado */
+}
+
+.contact-info a:hover {
+    text-decoration: underline; /* Subrayar al pasar el ratón */
 }

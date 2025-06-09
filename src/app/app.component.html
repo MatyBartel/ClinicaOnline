@@ -1,23 +1,16 @@
-<div class="nav">
-    <div class="button-group">
-        <button routerLink="home" routerLinkActive="active-route">INICIO</button>
-        <button routerLink="altaChofer" routerLinkActive="active-route">ALTA CHOFER</button>
-    </div>
-    <div class="login-button-container" *ngIf="!isLoggedIn">
-        <button routerLink="login" routerLinkActive="active-route">INICIAR SESION</button>
-    </div>
-    <div class="register-button-container" *ngIf="!isLoggedIn">
-    </div>
-    <div class="logout-button-container" *ngIf="isLoggedIn"> 
-        <button (click)="logout()">CERRAR SESION</button>
-    </div>
-</div>
+<body>
+    <div [ngClass]="{'no-scroll': isLoginOrRegister}">
+        <div class="nav">
+            <div class="button-group">
+                <button routerLink="home" routerLinkActive="active-route">INICIO</button>
+            </div>
+        </div>
 
-<div class="form-container1">
-<router-outlet></router-outlet>
-</div>
-
-<div class="form-container">
-    <app-login *ngIf="router.url === '/login'" (loginStatusChange)="setLoginStatus($event)"></app-login>
-</div>
+        <div class="form-container1">
+            <router-outlet></router-outlet>
+        </div>
+            <!-- El contenido de la aplicación -->
+            <router-outlet></router-outlet>
+    </div>
+</body>
 

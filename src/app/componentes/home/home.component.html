@@ -1,12 +1,65 @@
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet"> 
 <div class="home-container">
-    <h2>¡Bienvenido a la Página de Inicio!</h2>
-  
-    <div *ngIf="githubData" class="github-profile">
-      <h3>Perfil de GitHub</h3>
-      <img [src]="githubData.avatar_url" alt="Avatar de GitHub" class="github-avatar" />
-      <p>Nombre: {{ githubData.name }}</p>
-      <p>Bio: {{ githubData.bio }}</p>
-      <p>Ubicación: {{ githubData.location }}</p>
-      <p>Repositórios Públicos: {{ githubData.public_repos }}</p>
+  <header class="header">
+    <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Home%2FBartel%20Clinica.png?alt=media&token=41b6210c-7e30-4924-af2b-42c8ed20a25c" alt="Logo de la Clínica" class="logo" />
+    <div class="menu-icon-container">
+      <button class="menu-icon-button" (click)="redirigirALogin()">
+        <img
+          src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Home%2FLogin.png?alt=media&token=67d89f2f-0da4-4f56-92e0-1e8137b2d9d9"
+          alt="Login Icono"
+          class="menu-icon-image"
+        />
+      </button>
     </div>
-  </div>
+  </header>
+
+  <!-- Sección de bienvenida -->
+  <section class="welcome-section">
+    <h1>Bienvenido a la Clínica Bartel</h1>
+    <p>
+      Nos dedicamos a proporcionar servicios de salud de alta calidad con acceso fácil y rápido a médicos profesionales.
+    </p>
+  </section>
+
+  <!-- Sección ¿Qué nos diferencia? -->
+  <section class="differentiators-section">
+    <h2>¿Qué nos diferencia?</h2>
+    <div class="cards-container">
+      <div class="card">
+        <h3>Atención Personalizada</h3>
+        <p>Nos enfocamos en cada paciente con un trato especial y único, podras gestionar tus turnos como tener tu ficha medica cuando quieras.</p>
+        <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Home%2Fatencion-personaliz.png?alt=media&token=577d5e14-8708-4c22-bdb0-ab1df0dcb1c9" alt="Atención Personalizada" class="card-image" />
+      </div>
+      <div class="card">
+        <h3>Acceso Inmediato</h3>
+        <p>Reserva tus consultas de forma rápida y desde cualquier dispositivo a cualquiera hora, desde donde sea, con el profesional que desees.</p>
+        <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Home%2FIngreso%20inmediato.png?alt=media&token=03e81afb-c196-4ab4-ac8b-f5541b246920" alt="Acceso Inmediato" class="card-image" />
+      </div>
+      <div class="card">
+        <h3>Profesionales de Confianza</h3>
+        <p>Un equipo médico de alto nivel y con experiencia en el rubro te pueden dar la tranquilidad de que estas en el lugar indicado.</p>
+        <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Home%2FProfesionales.png?alt=media&token=8a137d64-eac6-4c96-af57-fe6c5d85b39b" alt="Profesionales de Confianza" class="card-image" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Barra informativa -->
+  <section class="info-bar">
+    <div class="info-item">
+      <p>+15</p>
+      <h4>Años en el rubro</h4>
+    </div>
+    <div class="info-item">
+      <p>+25.000</p>
+      <h4>Pacientes Atendidos</h4>
+    </div>
+    <div class="info-item">
+      <p>+50</p>
+      <h4>Profesionales</h4>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <p>&copy; 2024 Clinica Bartel. Todos los derechos reservados.</p>
+</footer>

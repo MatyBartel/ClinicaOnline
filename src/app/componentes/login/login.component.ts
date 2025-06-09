@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { initializeApp } from "firebase/app";
-import { firebaseConfig } from '../../../firebaseConfig'; 
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { firebaseConfig } from '../../../firebaseConfig';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -21,39 +22,80 @@ export class LoginComponent {
 
   app = initializeApp(firebaseConfig);
   auth = getAuth(this.app);
+  db = getFirestore(this.app);
 
   constructor(private router: Router) {}
 
-  // Función para autocompletar campos para Admin
-  fillAdmin() {
-    this.username = 'admin@correo.com';
-    this.password = 'admin123';
+  // Función para autocompletar campos para Especialista
+  fillEspecialista() {
+    this.username = 'especialista@correo.com';
+    this.password = 'especialista123';
   }
 
-  // Función para autocompletar campos para Empleado
-  fillEmpleado() {
-    this.username = 'empleado@correo.com';
-    this.password = 'empleado';
+  // Función para autocompletar campos para Paciente
+  fillPaciente() {
+    this.username = 'paciente@correo.com';
+    this.password = 'paciente123';
   }
 
-  async onSubmit() {
-    try {
-      const userCredential = await signInWithEmailAndPassword(this.auth, this.username, this.password);
-      this.loginStatusChange.emit(true); 
-      this.router.navigate(['/home']); 
-    } catch (error: any) {
-      switch (error.code) {
-        case 'auth/invalid-credential':
-          this.errorMessage = 'Correo o contraseña incorrecta.';
-          break;
-        case 'auth/invalid-email':
-          this.errorMessage = 'Formato de correo inválido.';
-          break;
-        default:
-          this.errorMessage = 'Error al iniciar sesión. Intenta nuevamente.';
-      }
-      console.error('Error en login:', error);
-      this.loginStatusChange.emit(false);
+    // Función para autocompletar campos para Admin
+    fillAdmin() {
+      this.username = 'admin@correo.com';
+      this.password = 'admin123';
     }
-  }
+
+    async onSubmit() {
+      try {
+        const userCredential = await signInWithEmailAndPassword(this.auth, this.username, this.password);
+        const user = userCredential.user;
+    
+        // Referencias a los documentos en las tres colecciones
+        const especialistasRef = doc(this.db, 'especialistas', user.uid);
+        const pacientesRef = doc(this.db, 'pacientes', user.uid);
+        const administradoresRef = doc(this.db, 'administradores', user.uid);
+    
+        // Obtener los documentos de las tres colecciones
+        const [especialistaDoc, pacienteDoc, adminDoc] = await Promise.all([
+          getDoc(especialistasRef),
+          getDoc(pacientesRef),
+          getDoc(administradoresRef)
+        ]);
+    
+        // Verificamos en qué colección se encuentra el usuario
+        if (especialistaDoc.exists()) {
+          const userData = especialistaDoc.data();
+          this.router.navigate(['/misTurnos']);
+          this.loginStatusChange.emit(true);
+        } else if (pacienteDoc.exists()) {
+          const userData = pacienteDoc.data();
+          this.router.navigate(['/misTurnos']);
+          this.loginStatusChange.emit(true);
+        } else if (adminDoc.exists()) {
+          const userData = adminDoc.data();
+          this.router.navigate(['/usuarios']);
+          this.loginStatusChange.emit(true);
+        } else {
+          this.errorMessage = 'No se encontró el usuario en la base de datos.';
+          this.loginStatusChange.emit(false);
+        }
+    
+      } catch (error: any) {
+        switch (error.code) {
+          case 'auth/user-not-found':
+          case 'auth/wrong-password':
+            this.errorMessage = 'Correo o contraseña incorrecta.';
+            break;
+          case 'auth/invalid-email':
+            this.errorMessage = 'Formato de correo inválido.';
+            break;
+          case 'auth/invalid-credential':
+            this.errorMessage = 'Usuario inexistente'
+            break;
+          default:
+            this.errorMessage = 'Error al iniciar sesión. Intenta nuevamente.';
+        }
+        console.error('Error en login:', error);
+        this.loginStatusChange.emit(false);
+      }
+    }
 }

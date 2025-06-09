@@ -48,4 +48,8 @@ export class AppComponent implements OnInit {
   updateLoginStatus(isLoggedIn: boolean) {
     this.isLoggedIn = isLoggedIn;
   }
+
+  get isLoginOrRegister() {
+    return this.router.url === '/login' || this.router.url === '/registro';
+  }
 }
