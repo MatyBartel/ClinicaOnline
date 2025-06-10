@@ -1,0 +1,73 @@
+<div *ngIf="usuarioActual?.tipo === 'administrador'; else noAcceso">
+  <h2>Gestión de Usuarios</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Mail</th>
+        <th>DNI</th>
+        <th>Edad</th>
+        <th *ngIf="tieneEspecialistas()">Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of usuarios">
+        <td>{{ u.tipo }}</td>
+        <td>{{ u.nombre }}</td>
+        <td>{{ u.apellido }}</td>
+        <td>{{ u.correo }}</td>
+        <td>{{ u.dni }}</td>
+        <td>{{ u.edad }}</td>
+        <td *ngIf="u.tipo === 'especialista'">
+          {{ u.aprobado ? 'Habilitado' : 'Inhabilitado' }}
+        </td>
+        <td>
+          <button *ngIf="u.tipo === 'especialista'" (click)="cambiarEstadoEspecialista(u)">
+            {{ u.aprobado ? 'Inhabilitar' : 'Habilitar' }}
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="boton-centrado">
+    <button (click)="mostrarFormularioAdmin = !mostrarFormularioAdmin">
+      {{ mostrarFormularioAdmin ? 'Ocultar registro de administrador' : 'Registrar un usuario Administrador' }}
+    </button>
+  </div>
+
+  <form *ngIf="mostrarFormularioAdmin" (ngSubmit)="registrarAdmin()" #adminForm="ngForm" class="form-admin">
+    <h3>Registrar Administrador</h3>
+    <div class="input-container">
+      <input type="text" [(ngModel)]="adminNombre" name="adminNombre" placeholder="Nombre" required>
+    </div>
+    <div class="input-container">
+      <input type="text" [(ngModel)]="adminApellido" name="adminApellido" placeholder="Apellido" required>
+    </div>
+    <div class="input-container">
+      <input type="number" [(ngModel)]="adminEdad" name="adminEdad" placeholder="Edad" required>
+    </div>
+    <div class="input-container">
+      <input type="text" [(ngModel)]="adminDni" name="adminDni" placeholder="DNI" required>
+    </div>
+    <div class="input-container">
+      <input type="email" [(ngModel)]="adminMail" name="adminMail" placeholder="Mail" required>
+    </div>
+    <div class="input-container">
+      <input type="password" [(ngModel)]="adminPassword" name="adminPassword" placeholder="Password" required>
+    </div>
+    <div class="input-container">
+      <input type="file" (change)="onAdminImageSelected($event)" accept="image/*" required>
+    </div>
+    <button type="submit">Registrar Administrador</button>
+    <div *ngIf="adminError" class="error">{{ adminError }}</div>
+    <div *ngIf="adminSuccess" class="success">{{ adminSuccess }}</div>
+  </form>
+</div>
+<ng-template #noAcceso>
+  <p>No tiene acceso a esta sección.</p>
+</ng-template>

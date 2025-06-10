@@ -26,19 +26,16 @@ export class LoginComponent {
 
   constructor(private router: Router) {}
 
-  // Función para autocompletar campos para Especialista
   fillEspecialista() {
-    this.username = 'especialista@correo.com';
-    this.password = 'especialista123';
+    this.username = 'medicoClinico@gmail.com';
+    this.password = '123456';
   }
 
-  // Función para autocompletar campos para Paciente
   fillPaciente() {
     this.username = 'paciente@correo.com';
     this.password = 'paciente123';
   }
 
-    // Función para autocompletar campos para Admin
     fillAdmin() {
       this.username = 'admin@correo.com';
       this.password = 'admin123';
@@ -49,23 +46,25 @@ export class LoginComponent {
         const userCredential = await signInWithEmailAndPassword(this.auth, this.username, this.password);
         const user = userCredential.user;
     
-        // Referencias a los documentos en las tres colecciones
         const especialistasRef = doc(this.db, 'especialistas', user.uid);
         const pacientesRef = doc(this.db, 'pacientes', user.uid);
         const administradoresRef = doc(this.db, 'administradores', user.uid);
     
-        // Obtener los documentos de las tres colecciones
         const [especialistaDoc, pacienteDoc, adminDoc] = await Promise.all([
           getDoc(especialistasRef),
           getDoc(pacientesRef),
           getDoc(administradoresRef)
         ]);
     
-        // Verificamos en qué colección se encuentra el usuario
         if (especialistaDoc.exists()) {
           const userData = especialistaDoc.data();
-          this.router.navigate(['/misTurnos']);
-          this.loginStatusChange.emit(true);
+          if (userData['aprobado']) {
+            this.router.navigate(['/misTurnos']);
+            this.loginStatusChange.emit(true);
+          } else {
+            this.errorMessage = 'Tu cuenta de especialista aún no fue habilitada por un administrador.';
+            this.loginStatusChange.emit(false);
+          }
         } else if (pacienteDoc.exists()) {
           const userData = pacienteDoc.data();
           this.router.navigate(['/misTurnos']);

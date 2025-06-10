@@ -1,37 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-/* Estilo global - Deshabilita scroll en toda la página */
 html,
 body {
     margin: 0;
     padding: 0;
     height: 100%;
-    /* Asegura que ocupe toda la altura de la ventana */
     width: 100%;
-    /* Asegura que ocupe todo el ancho de la ventana */
     overflow-y: hidden;
 }
 
-/* Configuración general */
 body {
     background-image: url('https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/General%2FHospital%20Bartel.jpeg?alt=media&token=3f838801-78f3-4374-86e0-db83ab37e701');
     background-size: cover;
-    /* La imagen cubre toda el área */
     background-position: center;
-    /* Centra la imagen */
     background-attachment: fixed;
-    /* Hace que la imagen no se mueva al hacer scroll */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    /* Asegura que ocupe toda la altura de la ventana */
     width: 100vw;
-    /* Asegura que ocupe todo el ancho de la ventana */
     overflow-y: hidden;
 }
 
-/* Resto del CSS (como antes) */
 .login-container {
     max-width: 400px;
     width: 100%;
@@ -133,7 +123,6 @@ button:active {
     background-color: #454545;
 }
 
-/* Estilo para el enlace de registro */
 .register-link {
     color: #00bccd;
     text-decoration: none;
@@ -149,16 +138,13 @@ button:active {
     color: #007bff;
 }
 
-/* Contenedor principal */
 .acceso-rapido {
     display: flex;
     flex-direction: column;
-    /* 2 filas */
     gap: 20px;
     align-items: center;
 }
 
-/* Estilo para el label */
 .acceso-rapido-label {
     font-size: 1.2em;
     font-weight: bold;
@@ -173,13 +159,11 @@ button:active {
     gap: 20px;
 }
 
-/* Estilo común para todos los botones */
 .acceso-rapido-btn {
     width: 60px;
     height: 60px;
     background-color: transparent;
     border: 2px solid #fff;
-    /* borde blanco */
     border-radius: 10px;
     display: flex;
     justify-content: center;
@@ -189,7 +173,6 @@ button:active {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Estilo de los logos dentro de los botones */
 .acceso-rapido-btn .logo {
     width: 40px;
     height: 40px;
@@ -197,7 +180,6 @@ button:active {
     transition: transform 0.3s ease-in-out;
 }
 
-/* Colores para Pacientes */
 .paciente {
     background-color: red;
 }
@@ -209,10 +191,8 @@ button:active {
 
 .paciente .logo {
     filter: brightness(0) invert(1);
-    /* Asegura que los logos sean blancos sobre rojo */
 }
 
-/* Colores para Especialistas */
 .especialista {
     background-color: green;
 }
@@ -224,10 +204,8 @@ button:active {
 
 .especialista .logo {
     filter: brightness(0) invert(1);
-    /* Asegura que los logos sean blancos sobre verde */
 }
 
-/* Colores para Admin */
 .admin {
     background-color: grey;
 }
@@ -239,5 +217,4 @@ button:active {
 
 .admin .logo {
     filter: brightness(0) invert(1);
-    /* Asegura que los logos sean blancos sobre gris */
 }

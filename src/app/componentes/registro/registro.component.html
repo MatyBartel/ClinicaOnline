@@ -52,7 +52,7 @@
 
         <div class="input-container">
             <label for="obraSocial">
-                <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fobrasocial.png?alt=media&token=9987738a-7bf4-47db-ac16-7d3ccd040a23" alt="Obra Social" class="input-icon">
+                <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fdni.png?alt=media&token=a3641431-2780-4aeb-9e29-d1b51a6b9897" alt="Obra Social" class="input-icon">
             </label>
             <input type="text" id="obraSocial" [(ngModel)]="obraSocial" name="obraSocial" required placeholder="Obra social del paciente">
         </div>
@@ -74,23 +74,23 @@
         <!-- Foto de Perfil -->
         <div class="input-container">
             <label for="paciente-foto-perfil" class="file-label">
-            <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Frostro.png?alt=media&token=2cbc023d-44b2-4c27-a525-32986057c50b" alt="Foto de Perfil" class="input-icon">
-            <span>Seleccione una foto de su rostro</span>
-            <input type="file" (change)="onImageSelected($event, 'paciente', 'fotoPerfil')" id="paciente-foto-perfil" accept="image/*" required>
+                <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Frostro.png?alt=media&token=2cbc023d-44b2-4c27-a525-32986057c50b" alt="Foto de Perfil" class="input-icon">
+                <span>Seleccione una foto de su rostro</span>
+                <input type="file" (change)="onImageSelected($event, 'paciente', 'fotoPerfil')" id="paciente-foto-perfil" accept="image/*" required>
             </label>
             <!-- Vista previa de la imagen seleccionada -->
-            <img *ngIf="imagenesPerfil.paciente.fotoPerfil" [src]="imagenesPerfil.paciente.fotoPerfil" alt="Vista previa" class="preview-image">
+            <img *ngIf="imagenesPerfilPreview.paciente.fotoPerfil" [src]="imagenesPerfilPreview.paciente.fotoPerfil" alt="Vista previa" class="preview-image">
         </div>
         
         <!-- Foto de Identificación -->
         <div class="input-container">
             <label for="paciente-foto-identificacion" class="file-label">
-            <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fdni2.png?alt=media&token=80b6649a-af88-4d5e-bde2-8412d5b93726" alt="Foto de Identificación" class="input-icon">
-            <span>Seleccione una foto de su dni</span>
-            <input type="file" (change)="onImageSelected($event, 'paciente', 'fotoPerfil2')" id="paciente-foto-identificacion" accept="image/*" required>
+                <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fdni2.png?alt=media&token=80b6649a-af88-4d5e-bde2-8412d5b93726" alt="Foto de Identificación" class="input-icon">
+                <span>Seleccione una foto de su dni</span>
+                <input type="file" (change)="onImageSelected($event, 'paciente', 'fotoPerfil2')" id="paciente-foto-identificacion" accept="image/*" required>
             </label>
             <!-- Vista previa de la imagen seleccionada -->
-            <img *ngIf="imagenesPerfil.paciente.fotoPerfil2" [src]="imagenesPerfil.paciente.fotoPerfil2" alt="Vista previa" class="preview-image">
+            <img *ngIf="imagenesPerfilPreview.paciente.fotoPerfil2" [src]="imagenesPerfilPreview.paciente.fotoPerfil2" alt="Vista previa" class="preview-image">
         </div>
 
                 <!-- Botón de volver atrás en el formulario -->
@@ -130,16 +130,18 @@
 
         <div class="input-container">
             <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fespecialidad2.png?alt=media&token=fd641cdb-94ca-4067-a897-33552cfd4db4" alt="Especialidad" class="input-icon">
-            <select id="especialidad" [(ngModel)]="especialidadSeleccionada" name="especialidad" required placeholder="Selecciona una especialidad">
+            <select id="especialidad" [(ngModel)]="especialidadSeleccionada" name="especialidad" required>
                 <option value="">Seleccione una especialidad</option>
                 <option *ngFor="let especialidad of especialidades" [value]="especialidad">{{ especialidad }}</option>
+                <option value="otra">Otra...</option>
             </select>
         </div>
 
+        <!-- Input para agregar nueva especialidad si selecciona "Otra..." -->
         <div class="input-container" *ngIf="especialidadSeleccionada === 'otra'">
-            <img src="ruta_a_icono_especialidad.png" alt="Nueva especialidad" class="input-icon">
-            <input type="text" [(ngModel)]="nuevaEspecialidad" placeholder="Escribe la nueva especialidad">
-            <button (click)="agregarEspecialidad()">Agregar</button>
+            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828817.png" alt="Nueva especialidad" class="input-icon">
+            <input type="text" [(ngModel)]="nuevaEspecialidad" name="nuevaEspecialidad" placeholder="Escribe otra especialidad">
+            <button type="button" (click)="agregarEspecialidad(); especialidadSeleccionada = nuevaEspecialidad;">Agregar</button>
         </div>
 
         <div class="input-container">
@@ -156,9 +158,9 @@
             <label for="especialista-foto-perfil" class="file-label">
                 <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fimage%20(29).png?alt=media&token=7c140d4d-335f-48ef-bc99-40df2a1ed5be" alt="Especialista" class="input-icon">
                 <span>Selecciona tu imagen de perfil</span>
-                <input type="file" (change)="onImageSelected($event, 'especialista', 'fotoPerfilEsp')" id="especialista-foto-perfil" accept="image/*" required>
+                <input type="file" (change)="onImageSelected($event, 'especialista', 'fotoPerfil')" id="especialista-foto-perfil" accept="image/*" required>
             </label>
-            <img *ngIf="imagenesPerfil.especialista.fotoPerfilEsp" [src]="imagenesPerfil.especialista.fotoPerfilEsp" alt="Vista previa" class="preview-image">
+            <img *ngIf="imagenesPerfilPreview.especialista.fotoPerfil" [src]="imagenesPerfilPreview.especialista.fotoPerfil" alt="Vista previa" class="preview-image">
         </div>
         <!-- Botón de volver atrás en el formulario -->
         <button (click)="volverSeleccionTipo()" class="btn-atras">
@@ -168,4 +170,5 @@
         <button type="submit" class="submit-btn">Registrar</button>
         <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
     </form>
+
 </body>

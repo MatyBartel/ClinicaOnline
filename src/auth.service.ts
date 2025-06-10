@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut, UserCredential } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from './firebaseConfig'; 
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +13,16 @@ export class AuthService {
 
   constructor() {}
 
-  login(email: string, password: string) {
+  login(email: string, password: string): Promise<UserCredential> {
+    return signInWithEmailAndPassword(this.auth, email, password)
+      .then(userCredential => {
+        this.isLoggedIn = true;
+        return userCredential;
+      })
+      .catch(error => {
+        console.error("Error al iniciar sesión:", error);
+        throw error;
+      });
   }
 
   logout() {
