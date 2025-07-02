@@ -1,44 +1,59 @@
 <div class="turno-container">
   <h2>Sacar Turno</h2>
   <form [formGroup]="turnoForm" (ngSubmit)="solicitarTurno()">
-    <div class="form-group">
-      <label>Especialidad:</label>
-      <select formControlName="especialidad" (change)="onEspecialidadChange()">
-        <option value="" disabled selected>Seleccione una especialidad</option>
-        <option *ngFor="let esp of especialidades" [value]="esp">{{esp}}</option>
-      </select>
+    <!-- Paso 1: Selección de profesional -->
+    <div *ngIf="!profesionalSeleccionado" class="profesionales-step">
+      <h3 class="step-title">Selecciona un profesional</h3>
+      <div class="profesionales-lista">
+        <button *ngFor="let prof of profesionales" (click)="seleccionarProfesional(prof)" class="profesional-btn">
+          <img [src]="prof.imagen" alt="{{prof.nombre}}" class="profesional-img">
+          <div class="profesional-nombre">{{ prof.nombre }}</div>
+        </button>
+      </div>
     </div>
 
-    <div class="form-group" *ngIf="especialistasFiltrados.length > 0">
-      <label>Especialista:</label>
-      <select formControlName="especialista" (change)="onEspecialistaChange()">
-        <option value="" disabled selected>Seleccione un especialista</option>
-        <option *ngFor="let e of especialistasFiltrados" [value]="e.id">{{e.nombre}} {{e.apellido}}</option>
-      </select>
+    <!-- Paso 2: Selección de especialidad -->
+    <div *ngIf="profesionalSeleccionado && !especialidadSeleccionada" class="especialidades-lista">
+      <h3>Selecciona una especialidad</h3>
+      <button *ngFor="let esp of profesionalSeleccionado.especialidades" (click)="seleccionarEspecialidad(esp)" class="especialidad-btn">
+        <div class="especialidad-img-container">
+          <img [src]="getImagenEspecialidad(esp.nombre)" alt="{{esp.nombre}}" class="especialidad-img">
+        </div>
+        <div class="especialidad-nombre">{{ esp.nombre }}</div>
+      </button>
     </div>
 
-    <div *ngIf="especialistasFiltrados.length > 0 && diasDisponibles.length === 0" class="mensaje-vacio">
-      No hay días disponibles para este especialista.
+    <!-- Paso 3: Selección de día -->
+    <div *ngIf="especialidadSeleccionada && !diaSeleccionado" class="dias-step">
+      <h3 class="step-title">Selecciona un día</h3>
+      <div class="dias-lista">
+        <button *ngFor="let dia of diasDisponibles" (click)="seleccionarDia(dia)" class="dia-btn">
+          {{ dia }}
+        </button>
+      </div>
     </div>
 
-    <div class="form-group" *ngIf="diasDisponibles.length > 0">
-      <label>Día:</label>
-      <select formControlName="dia" (change)="onDiaChange()">
-        <option value="" disabled selected>Seleccione un día</option>
-        <option *ngFor="let dia of diasDisponibles" [value]="dia">{{dia}}</option>
-      </select>
+    <!-- Paso 4: Selección de horario -->
+    <div *ngIf="diaSeleccionado && !horarioSeleccionado" class="horarios-lista">
+      <h3>Selecciona un horario</h3>
+      <button *ngFor="let hora of horariosDisponibles" 
+              (click)="seleccionarHorario(hora)" 
+              class="horario-btn" 
+              [disabled]="!esHorarioDisponible(hora)"
+              [ngClass]="{'horario-no-disponible': !esHorarioDisponible(hora), 'horario-seleccionado': horarioSeleccionado === hora}">
+        {{ hora }}
+      </button>
     </div>
 
-    <div *ngIf="diasDisponibles.length > 0 && horasDisponibles.length === 0 && turnoForm.value.dia" class="mensaje-vacio">
-      No hay horarios disponibles para el día seleccionado.
-    </div>
-
-    <div class="form-group" *ngIf="horasDisponibles.length > 0">
-      <label>Horario:</label>
-      <select formControlName="hora">
-        <option value="" disabled selected>Seleccione un horario</option>
-        <option *ngFor="let hora of horasDisponibles" [value]="hora">{{hora}}</option>
-      </select>
+    <!-- Confirmar turno -->
+    <div *ngIf="horarioSeleccionado" class="confirmar-turno">
+      <h3>Confirmar turno</h3>
+      <p>
+        Profesional: <b>{{ profesionalSeleccionado?.nombre }}</b><br>
+        Especialidad: <b>{{ especialidadSeleccionada?.nombre }}</b><br>
+        Día: <b>{{ diaSeleccionado }}</b><br>
+        Horario: <b>{{ horarioSeleccionado }}</b>
+      </p>
     </div>
 
     <div class="form-group" *ngIf="esAdmin">
@@ -49,8 +64,10 @@
       </select>
     </div>
 
-    <button type="submit" [disabled]="!turnoForm.valid">Solicitar Turno</button>
+    <!-- Botón único de solicitar turno al final del formulario, solo visible si hay horario seleccionado -->
+    <div class="solicitar-turno-footer" style="text-align:center; margin-top: 32px;" *ngIf="horarioSeleccionado">
+      <button class="confirmar-btn" (click)="solicitarTurno()" [disabled]="!horarioSeleccionado || enviando">Solicitar Turno</button>
+      <div *ngIf="mensajeExito" class="mensaje-exito">{{ mensajeExito }}</div>
+    </div>
   </form>
-
-  <div *ngIf="mensajeExito" class="mensaje-exito-turno">🎉 {{ mensajeExito }}</div>
 </div>

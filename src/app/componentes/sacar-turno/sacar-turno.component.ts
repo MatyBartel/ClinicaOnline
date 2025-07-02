@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Firestore, collection, collectionData, query, where, getDocs, addDoc, doc, getDoc } from '@angular/fire/firestore'; // <-- modular
 import { map } from 'rxjs/operators';
 import { getAuth } from 'firebase/auth';
+import { firstValueFrom } from 'rxjs';
 
 interface Especialista {
   id: string;
@@ -19,6 +20,19 @@ interface Paciente {
   apellido: string;
   dni: string;
   edad: number;
+}
+
+interface Profesional {
+  id: string;
+  nombre: string;
+  imagen: string;
+  especialidades: Especialidad[];
+}
+
+interface Especialidad {
+  id: string;
+  nombre: string;
+  imagen: string;
 }
 
 @Component({
@@ -42,11 +56,33 @@ export class SacarTurnoComponent implements OnInit {
 
   mensajeExito: string = '';
 
+  profesionales: Profesional[] = [];
+  profesionalSeleccionado: Profesional | null = null;
+  especialidadSeleccionada: Especialidad | null = null;
+  diaSeleccionado: string | null = null;
+  horariosDisponibles: string[] = [];
+  horarioSeleccionado: string | null = null;
+
+  enviando: boolean = false;
+
+  horariosReservados: string[] = [];
+
+  especialidadImagenes: { [nombre: string]: string } = {
+    'Odontologo': 'https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Especialidades%2Fodontologo.jpg?alt=media&token=532b9f54-92cb-4928-86d7-c971f567fe6f',
+    'Pediatra': 'https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Especialidades%2Fpediatra.jpg?alt=media&token=e93eb3a9-9988-45b1-b197-49219d195b61',
+    'Kinesiologo': 'https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Especialidades%2Fkinesiologi%CC%81a.png?alt=media&token=ec2ffb61-c4d0-443a-af9a-1db99176b2f9',
+    'Cardiologo': 'https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Especialidades%2Fcardiologo.png?alt=media&token=6196d14c-1acd-47c4-bdbf-9a170971b55b',
+    'Clínico': 'https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Especialidades%2Fclinico.jpg?alt=media&token=17https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Especialidades%2Fclinico.jpg?alt=media&token=1703f9b0-ede3-4943-a0e4-2d644284ffdehttps://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Especialidades%2Fclinico.jpg?alt=media&token=1703f9b0-ede3-4943-a0e4-2d644284ffde03f9b0-ede3-4943-a0e4-2d644284ffde',
+    'Dermatólogo': 'https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Especialidades%2Fdermatologo.jpg?alt=media&token=89c12570-e117-4f79-86f4-3b5c1218ab14',
+    'Traumatólogo': 'https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Especialidades%2Ftraumatologo.jpeg?alt=media&token=3b4519c1-85c0-439c-9f7a-c5ec14145e0c',
+    'default': 'https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Especialidades%2Fdefault.jpg?alt=media&token=d5298d56-1986-405e-8fb5-8587562904e5'
+  };
+
   private firestore: Firestore = inject(Firestore);
 
   constructor(private fb: FormBuilder) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.turnoForm = this.fb.group({
       especialidad: ['', Validators.required],
       especialista: ['', Validators.required],
@@ -55,11 +91,7 @@ export class SacarTurnoComponent implements OnInit {
       paciente: ['']
     });
 
-    const especialistasRef = collection(this.firestore, 'especialistas');
-    collectionData(especialistasRef, { idField: 'id' }).subscribe((especialistas: any) => {
-      this.especialistas = especialistas;
-      this.especialidades = Array.from(new Set(especialistas.map((e: Especialista) => e.especialidad)));
-    });
+    await this.cargarProfesionalesDesdeFirestore();
 
     if (this.esAdmin) {
       const pacientesRef = collection(this.firestore, 'pacientes');
@@ -67,6 +99,31 @@ export class SacarTurnoComponent implements OnInit {
         this.pacientes = pacientes;
       });
     }
+  }
+
+  async cargarProfesionalesDesdeFirestore() {
+    const especialistasRef = collection(this.firestore, 'especialistas');
+    const qAprobados = query(especialistasRef, where('aprobado', '==', true));
+    const snapshot = await getDocs(qAprobados);
+    this.profesionales = snapshot.docs.map(doc => {
+      const data = doc.data();
+      let especialidades: Especialidad[] = [];
+      if (Array.isArray(data['especialidades'])) {
+        especialidades = data['especialidades'].map((esp: string, idx: number) => ({
+          id: 'esp' + idx,
+          nombre: esp,
+          imagen: ''
+        }));
+      } else if (data['especialidad']) {
+        especialidades = [{ id: 'esp1', nombre: data['especialidad'], imagen: '' }];
+      }
+      return {
+        id: doc.id,
+        nombre: data['nombre'] + ' ' + data['apellido'],
+        imagen: Array.isArray(data['imagenPerfil']) && data['imagenPerfil'].length > 0 ? data['imagenPerfil'][0] : 'https://cdn-icons-png.flaticon.com/512/3774/3774296.png',
+        especialidades
+      };
+    });
   }
 
   async onEspecialidadChange() {
@@ -155,52 +212,160 @@ export class SacarTurnoComponent implements OnInit {
   }
 
   async solicitarTurno() {
-    if (this.turnoForm.valid) {
-      const { especialidad, especialista, dia, hora, paciente } = this.turnoForm.value;
-      const match = /^(\d{4}-\d{2}-\d{2}) \(([^)]+)\)$/.exec(dia);
-      const FechaTurno = match ? match[1] : dia;
-      const HorarioTurno = hora;
-      let pacienteId = null;
-      let pacienteNombre = '';
-      let pacienteApellido = '';
-      if (this.esAdmin) {
-        pacienteId = paciente;
-        const pacienteObj = this.pacientes.find(p => p.id === paciente);
-        pacienteNombre = pacienteObj ? pacienteObj.nombre : '';
-        pacienteApellido = pacienteObj ? pacienteObj.apellido : '';
-      } else {
-        pacienteId = getAuth().currentUser?.uid || null;
-        if (pacienteId) {
-          const pacienteDocRef = doc(this.firestore, 'pacientes', pacienteId);
-          const pacienteSnap = await getDoc(pacienteDocRef);
-          if (pacienteSnap.exists()) {
-            const data = pacienteSnap.data();
-            pacienteNombre = data['nombre'] || '';
-            pacienteApellido = data['apellido'] || '';
-          }
-        }
+    if (this.enviando) return;
+    if (!this.horarioSeleccionado) {
+      this.mensajeExito = 'Debes seleccionar un horario válido.';
+      setTimeout(() => { this.mensajeExito = ''; }, 3000);
+      return;
+    }
+    this.enviando = true;
+    const currentUser = getAuth().currentUser;
+    if (!currentUser) {
+      this.mensajeExito = 'Debes estar logueado para solicitar un turno.';
+      setTimeout(() => { this.mensajeExito = ''; }, 3000);
+      this.enviando = false;
+      return;
+    }
+
+    // Validar que el horario sigue disponible
+    const turnosRef = collection(this.firestore, 'Turnos');
+    const q = query(
+      turnosRef,
+      where('especialistaId', '==', this.profesionalSeleccionado?.id),
+      where('especialidad', '==', this.especialidadSeleccionada?.nombre),
+      where('FechaTurno', '==', this.diaSeleccionado),
+      where('HorarioTurno', '==', this.horarioSeleccionado)
+    );
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      this.mensajeExito = 'Ese horario ya fue reservado. Por favor, elige otro.';
+      setTimeout(() => { this.mensajeExito = ''; }, 3000);
+      this.enviando = false;
+      return;
+    }
+
+    // Obtener datos del paciente (nombre y apellido)
+    let pacienteNombre = '';
+    let pacienteApellido = '';
+    try {
+      const pacienteDoc = await getDoc(doc(this.firestore, 'pacientes', currentUser.uid));
+      if (pacienteDoc.exists()) {
+        const data = pacienteDoc.data();
+        pacienteNombre = data['nombre'] || '';
+        pacienteApellido = data['apellido'] || '';
       }
-      const especialistaObj = this.especialistas.find(e => e.id === especialista);
-      const especialistaNombre = especialistaObj ? especialistaObj.nombre : '';
-      const especialistaApellido = especialistaObj ? especialistaObj.apellido : '';
-      const turno = {
-        especialidad,
-        especialistaId: especialista,
-        especialistaNombre,
-        especialistaApellido,
-        pacienteId,
-        pacienteNombre,
-        pacienteApellido,
-        FechaTurno,
-        HorarioTurno,
-        estado: 'pendiente',
-        fechaSolicitud: new Date()
-      };
+    } catch {}
+
+    // Obtener datos del especialista (nombre y apellido)
+    let especialistaNombre = '';
+    let especialistaApellido = '';
+    if (this.profesionalSeleccionado) {
+      const partes = this.profesionalSeleccionado.nombre.split(' ');
+      especialistaNombre = partes[0] || '';
+      especialistaApellido = partes.slice(1).join(' ') || '';
+    }
+
+    const turno = {
+      especialistaId: this.profesionalSeleccionado?.id,
+      especialistaNombre,
+      especialistaApellido,
+      especialidad: this.especialidadSeleccionada?.nombre,
+      FechaTurno: this.diaSeleccionado,
+      HorarioTurno: this.horarioSeleccionado,
+      pacienteId: currentUser.uid,
+      pacienteNombre,
+      pacienteApellido,
+      estado: 'pendiente',
+      fechaSolicitud: new Date()
+    };
+
+    try {
       await addDoc(collection(this.firestore, 'Turnos'), turno);
       this.mensajeExito = '¡Turno solicitado con éxito!';
-      setTimeout(() => { this.mensajeExito = ''; }, 3000);
-      this.turnoForm.reset();
-      this.especialistasFiltrados = [];
+    } catch (error) {
+      this.mensajeExito = 'Error al solicitar el turno: ' + (error as any).message;
     }
+    setTimeout(() => { this.mensajeExito = ''; }, 3000);
+    this.profesionalSeleccionado = null;
+    this.especialidadSeleccionada = null;
+    this.diaSeleccionado = null;
+    this.horarioSeleccionado = null;
+    this.enviando = false;
+  }
+
+  seleccionarProfesional(prof: Profesional) {
+    this.profesionalSeleccionado = prof;
+    this.especialidadSeleccionada = null;
+    this.diaSeleccionado = null;
+    this.horarioSeleccionado = null;
+    // Simula días disponibles
+    this.diasDisponibles = ['09-09-2021', '10-09-2021', '11-09-2021'];
+  }
+
+  seleccionarEspecialidad(esp: Especialidad) {
+    this.especialidadSeleccionada = esp;
+    this.diaSeleccionado = null;
+    this.horarioSeleccionado = null;
+    // Simula días disponibles
+    this.diasDisponibles = ['09-09-2021', '10-09-2021', '11-09-2021'];
+  }
+
+  async seleccionarDia(dia: string) {
+    this.diaSeleccionado = dia;
+    this.horarioSeleccionado = null;
+    // Simula horarios disponibles
+    this.horariosDisponibles = ['08:00am', '09:30am', '11:00am', '12:15pm'];
+
+    // Cargar horarios reservados reales
+    if (this.profesionalSeleccionado && this.especialidadSeleccionada) {
+      const turnosRef = collection(this.firestore, 'Turnos');
+      const q = query(
+        turnosRef,
+        where('especialistaId', '==', this.profesionalSeleccionado.id),
+        where('especialidad', '==', this.especialidadSeleccionada.nombre),
+        where('FechaTurno', '==', dia)
+      );
+      const snapshot = await getDocs(q);
+      this.horariosReservados = snapshot.docs.map(doc => doc.data()['HorarioTurno']);
+    } else {
+      this.horariosReservados = [];
+    }
+  }
+
+  esHorarioDisponible(hora: string): boolean {
+    return !this.horariosReservados.includes(hora);
+  }
+
+  async seleccionarHorario(horario: string) {
+    // Verifica si ya existe un turno reservado para este profesional, especialidad, día y horario
+    const turnosRef = collection(this.firestore, 'Turnos');
+    const q = query(
+      turnosRef,
+      where('especialistaId', '==', this.profesionalSeleccionado?.id),
+      where('especialidad', '==', this.especialidadSeleccionada?.nombre),
+      where('FechaTurno', '==', this.diaSeleccionado),
+      where('HorarioTurno', '==', horario)
+    );
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      // No mostrar mensaje de error aquí, solo no permitir seleccionar
+      return;
+    }
+    this.horarioSeleccionado = horario;
+    this.mensajeExito = '';
+  }
+
+  confirmarTurno() {
+    // Aquí iría la lógica para guardar el turno
+    alert(`Turno reservado con ${this.profesionalSeleccionado?.nombre} - ${this.especialidadSeleccionada?.nombre} el ${this.diaSeleccionado} a las ${this.horarioSeleccionado}`);
+    // Reinicia el flujo
+    this.profesionalSeleccionado = null;
+    this.especialidadSeleccionada = null;
+    this.diaSeleccionado = null;
+    this.horarioSeleccionado = null;
+  }
+
+  getImagenEspecialidad(nombre: string): string {
+    return this.especialidadImagenes[nombre] || this.especialidadImagenes['default'];
   }
 }
