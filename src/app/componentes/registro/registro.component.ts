@@ -1,19 +1,21 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { getAuth, createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { Router } from '@angular/router';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { NgxCaptchaModule } from 'ngx-captcha';
+import { ReCaptcha2Component } from 'ngx-captcha';
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgxCaptchaModule],
   templateUrl: './registro.component.html',
   styleUrls: ['./registro.component.css']
 })
-export class RegistroComponent {
+export class RegistroComponent implements OnInit {
   @Output() loginStatusChange = new EventEmitter<boolean>();
 
   correo: string = '';
@@ -51,17 +53,36 @@ export class RegistroComponent {
 
   especialidades: string[] = [];
 
-  constructor(private router: Router) { }
+  siteKey: string = '6LealXQrAAAAABQjIi6GUbyifS06GPBW7U3eqLX6';
+
+  formulario!: FormGroup;
+
+  submitted = false;
+
+  @ViewChild('captchaElem') captchaElem!: ReCaptcha2Component;
+
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) { }
+
+  ngOnInit() {
+    this.formulario = this.fb.group({
+      recaptcha: ['', Validators.required]
+    });
+  }
 
   seleccionarTipo(tipo: string) {
     this.tipoSeleccionado = tipo;
   }
 
   agregarEspecialidad() {
-    if (this.nuevaEspecialidad.trim() !== '' && !this.especialidades.includes(this.nuevaEspecialidad.trim())) {
-      this.especialidades.push(this.nuevaEspecialidad.trim());
-      this.nuevaEspecialidad = '';
+    const especialidad = this.nuevaEspecialidad?.trim();
+    if (especialidad && !this.especialidades.includes(especialidad)) {
+      this.especialidades.push(especialidad);
     }
+    this.nuevaEspecialidad = '';
   }
 
   eliminarEspecialidad(index: number) {
@@ -106,6 +127,17 @@ export class RegistroComponent {
   }
 
   async onSubmit() {
+    this.submitted = true;
+    Object.values(this.formulario.controls).forEach(control => {
+      control.markAsTouched();
+    });
+    if (this.formulario.invalid) {
+      if (this.captchaElem) {
+        this.captchaElem.resetCaptcha();
+      }
+      return;
+    }
+
     const auth = getAuth();
     const db = getFirestore();
     const storage = getStorage();
@@ -214,6 +246,21 @@ export class RegistroComponent {
       }
       console.error(error);
     }
+
+    this.formulario.reset();
+    this.submitted = false;
+    if (this.captchaElem) {
+      this.captchaElem.resetCaptcha();
+    }
+  }
+
+  resetForm() {
+    this.formulario.reset();
+    this.submitted = false;
+    if (this.captchaElem) {
+      this.captchaElem.resetCaptcha();
+    }
+    this.formulario.get('recaptcha')?.setValue('');
   }
 
   volverLogin() {
@@ -222,5 +269,22 @@ export class RegistroComponent {
 
   volverSeleccionTipo() {
     this.tipoSeleccionado = null;
+    this.formulario.reset();
+    this.submitted = false;
+    if (this.captchaElem) {
+      this.captchaElem.resetCaptcha();
+    }
+    this.formulario.get('recaptcha')?.setValue('');
+  }
+
+  onCaptchaSuccess(token: string) {
+    console.log('Token reCAPTCHA v2:', token);
+  }
+
+  seleccionarEspecialidad(sug: string) {
+    if (sug && !this.especialidades.includes(sug)) {
+      this.especialidades.push(sug);
+    }
+    this.nuevaEspecialidad = '';
   }
 }

@@ -1,4 +1,3 @@
-/* Título */
 body {
     background-image: url('https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/General%2FHospital%20Bartel.jpeg?alt=media&token=3f838801-78f3-4374-86e0-db83ab37e701');
     background-size: cover;
@@ -9,7 +8,7 @@ body {
     overflow: hidden;
 }
 
-/* Estilo para la selección de tipo de usuario */
+
 .tipo-seleccion {
     display: flex;
     justify-content: center;
@@ -22,7 +21,7 @@ body {
     height: 100%;
 }
 
-/* Estilo de los botones de tipo (Paciente y Especialista) */
+
 .boton-tipo {
     background-color: #16243e;
     border: none;
@@ -57,7 +56,7 @@ body {
     transform: scale(1.1);
 }
 
-/* Estilo para el botón 'Volver al Login' */
+
 .btn-atras {
     background-color: #ffffff;
     color: black;
@@ -66,16 +65,16 @@ body {
     border-radius: 8px;
     font-size: 18px;
     cursor: pointer;
-    width: 100px; /* El mismo ancho que los botones de tipo de usuario */
-    margin: 0 auto 20px; /* Centra el botón en la parte superior con margen inferior */
-    display: block; /* Hace que el botón sea un bloque */
-    text-align: center; /* Centra el texto dentro del botón */
+    width: 100px; 
+    margin: 0 auto 20px; 
+    display: block;
+    text-align: center; 
 }
 .btn-atras:hover {
     background-color: #b8b8b8;
 }
 
-/* Estilos de los formularios */
+
 .formulario {
     background-color: #1a1a2e;
     padding: 30px;
@@ -83,8 +82,13 @@ body {
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     width: 500px;
     margin: auto;
-    margin-top: 30px;
+    margin-top: 70px !important;
     color: white;
+    transform: scale(0.6);
+    transform-origin: top center;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 .input-container {
@@ -120,7 +124,7 @@ body {
     outline: none;
 }
 
-/* Estilos para el botón de registro */
+
 button {
     background-color: #1bb3c1;
     color: white;
@@ -148,13 +152,13 @@ button:hover {
 
 .titulo-form {
     color: rgb(255, 255, 255);
-    font-size: 25px;
+    font-size: 2.1em !important;
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     font-family: 'Roboto', sans-serif;
 }
 
-/* Estilo para el select */
+
 select {
     width: 100%;
     padding: 10px;
@@ -163,7 +167,7 @@ select {
     background-color: #1a1a2e;
     color: white;
     font-size: 16px;
-    appearance: none; /* Oculta la flecha predeterminada en algunos navegadores */
+    appearance: none; 
     transition: border-color 0.3s;
 }
 
@@ -172,9 +176,8 @@ select:focus {
     outline: none;
 }
 
-/* Estilo del input file (oculto) */
 input[type="file"] {
-    opacity: 0; /* Oculta el input real */
+    opacity: 0;
     position: absolute;
     top: 0;
     left: 0;
@@ -183,12 +186,12 @@ input[type="file"] {
     cursor: pointer;
     z-index: 2;
 }
-/* Estilo del label que actúa como botón */
+
 .file-label {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #4CAF50; /* Color diferente */
+    background-color: #4CAF50;
     color: white;
     padding: 12px;
     border-radius: 8px;
@@ -202,7 +205,7 @@ input[type="file"] {
 }
 
 .file-label:hover {
-    background-color: #45A049; /* Color al pasar el mouse */
+    background-color: #45A049;
     transform: scale(1.05);
 }
 
@@ -241,11 +244,18 @@ input[type="file"] {
     color: #fff;
     border: none;
     border-radius: 8px;
-    padding: 10px 18px;
-    font-size: 18px;
+    padding: 10px 24px !important;
+    font-size: 1.15em !important;
     font-weight: bold;
     cursor: pointer;
     transition: background 0.2s;
+    min-width: 120px !important;
+    width: auto !important;
+    height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
 }
 .btn-agregar-especialidad:hover {
     background: #148a96;
@@ -300,4 +310,107 @@ input[type="file"] {
 }
 .chip-x:hover {
     color: #e53935;
+}
+
+/* Forzar tamaño de fuente grande en el captcha (NO SOY UN ROBOT) */
+.captcha-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+}
+.captcha-container > div, .captcha-container iframe {
+    transform: scale(1.4);
+    transform-origin: top center;
+    margin-bottom: 8px;
+}
+
+/* Mensaje de error del captcha grande y visible */
+.captcha-container .text-danger {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 1.3em !important;
+    color: #b71c1c !important;
+    font-weight: bold !important;
+}
+
+/* Inputs, selects y textarea aún más grandes */
+.formulario input,
+.formulario select,
+.formulario textarea {
+    font-size: 20px !important;
+    padding: 8px 14px !important;
+    height: 38px !important;
+    margin-bottom: 8px;
+}
+
+/* Botones más chicos y compactos */
+.formulario button,
+.formulario .btn,
+.formulario .btn-atras,
+.formulario .submit-btn {
+    font-size: 20px;
+    padding: 3px 8px;
+    height: 24px;
+    min-width: 60px;
+    margin: 2px 4px;
+}
+
+/* Reducir el espacio entre los grupos de campos */
+.form-group {
+    margin-bottom: 6px;
+}
+
+/* Más espacio debajo del botón de volver atrás */
+.btn-atras {
+    display: block !important;
+    margin: 16px auto 24px auto !important;
+    text-align: center !important;
+}
+
+/* Botón REGISTRAR más alto */
+.submit-btn {
+    height: 38px !important;
+    font-size: 20px !important;
+    padding: 6px 20px !important;
+    display: block;
+    margin: 18px auto 0 auto;
+    text-transform: uppercase !important;
+}
+
+/* Botón SELECCIONA TU IMAGEN DE PERFIL aún más grande y centrado */
+.btn-imagen-perfil {
+    font-size: 1.5em !important;
+    padding: 14px 36px !important;
+    min-width: 200px !important;
+    height: 56px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+/* Botones de especialidades y de imagen de perfil grandes y centrados */
+.btn-agregar-especialidad,
+.btn-especialidad,
+.btn-imagen-perfil {
+    font-size: 1.4em !important;
+    min-width: 160px !important;
+    height: 54px !important;
+    padding: 12px 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+/* Botón REGISTRAR deshabilitado visualmente */
+.submit-btn[disabled],
+button[disabled].submit-btn {
+  background: #888 !important;
+  color: #eee !important;
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  border: 1px solid #aaa !important;
+  box-shadow: none !important;
 }

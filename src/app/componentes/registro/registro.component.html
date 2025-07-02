@@ -18,7 +18,7 @@
     </div>
 
     <!-- Formulario para Paciente -->
-    <form *ngIf="tipoSeleccionado === 'paciente'" (ngSubmit)="onSubmit()" #registroForm="ngForm" class="formulario">
+    <form *ngIf="tipoSeleccionado === 'paciente'" (ngSubmit)="onSubmit()" [formGroup]="formulario" class="formulario">
         <div class="titulo-form">
             REGISTRATE COMO PACIENTE
         </div>
@@ -26,49 +26,49 @@
             <label for="nombre">
                 <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2FUsuarioW.png?alt=media&token=335845c9-ccf3-466f-a709-8dc973648919" alt="Nombre" class="input-icon">
             </label>
-            <input type="text" id="nombre" [(ngModel)]="nombre" name="nombre" required placeholder="Nombre del paciente">
+            <input type="text" id="nombre" [(ngModel)]="nombre" [ngModelOptions]="{standalone: true}" name="nombre" required placeholder="Nombre del paciente">
         </div>
 
         <div class="input-container">
             <label for="apellido">
                 <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fapellido.png?alt=media&token=12696ffd-50fb-4e7c-b079-90d1436f4813" alt="Apellido" class="input-icon">
             </label>
-            <input type="text" id="apellido" [(ngModel)]="apellido" name="apellido" required placeholder="Apellido del paciente">
+            <input type="text" id="apellido" [(ngModel)]="apellido" [ngModelOptions]="{standalone: true}" name="apellido" required placeholder="Apellido del paciente">
         </div>
 
         <div class="input-container">
             <label for="edad">
                 <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fedad.png?alt=media&token=c7d04542-0fc4-4a19-8bce-de28475ce8ab" alt="Edad" class="input-icon">
             </label>
-            <input type="number" id="edad" [(ngModel)]="edad" name="edad" required placeholder="Edad del paciente">
+            <input type="number" id="edad" [(ngModel)]="edad" [ngModelOptions]="{standalone: true}" name="edad" required placeholder="Edad del paciente">
         </div>
 
         <div class="input-container">
             <label for="dni">
                 <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fdni.png?alt=media&token=a3641431-2780-4aeb-9e29-d1b51a6b9897" alt="DNI" class="input-icon">
             </label>
-            <input type="text" id="dni" [(ngModel)]="dni" name="dni" required placeholder="DNI del paciente">
+            <input type="text" id="dni" [(ngModel)]="dni" [ngModelOptions]="{standalone: true}" name="dni" required placeholder="DNI del paciente">
         </div>
 
         <div class="input-container">
             <label for="obraSocial">
                 <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fdni.png?alt=media&token=a3641431-2780-4aeb-9e29-d1b51a6b9897" alt="Obra Social" class="input-icon">
             </label>
-            <input type="text" id="obraSocial" [(ngModel)]="obraSocial" name="obraSocial" required placeholder="Obra social del paciente">
+            <input type="text" id="obraSocial" [(ngModel)]="obraSocial" [ngModelOptions]="{standalone: true}" name="obraSocial" required placeholder="Obra social del paciente">
         </div>
 
         <div class="input-container">
             <label for="correo">
                 <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2FCorreo.png?alt=media&token=893fb86d-e897-405c-9135-b92773f98cec" alt="Correo" class="input-icon">
             </label>
-            <input type="email" id="correo" [(ngModel)]="correo" name="correo" required placeholder="Correo electrónico">
+            <input type="email" id="correo" [(ngModel)]="correo" [ngModelOptions]="{standalone: true}" name="correo" required placeholder="Correo electrónico">
         </div>
 
         <div class="input-container">
             <label for="contrasena">
                 <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2FCandadoW.png?alt=media&token=53af1ff2-1654-4f90-8585-92c8b31fd92e" alt="Contraseña" class="input-icon">
             </label>
-            <input type="password" id="contrasena" [(ngModel)]="contrasena" name="contrasena" required placeholder="Contraseña">
+            <input type="password" id="contrasena" [(ngModel)]="contrasena" [ngModelOptions]="{standalone: true}" name="contrasena" required placeholder="Contraseña">
         </div>
 
         <div class="input-container">
@@ -89,47 +89,60 @@
             <img *ngIf="imagenesPerfilPreview.paciente.fotoPerfil2" [src]="imagenesPerfilPreview.paciente.fotoPerfil2" alt="Vista previa" class="preview-image">
         </div>
 
-                <button (click)="volverSeleccionTipo()" class="btn-atras">
-                    🠔
-                </button>
+        <div class="form-group captcha-container">
+            <ngx-recaptcha2
+                #captchaElem
+                [siteKey]="siteKey"
+                formControlName="recaptcha"
+                (success)="onCaptchaSuccess($event)">
+            </ngx-recaptcha2>
+            <div *ngIf="submitted && !formulario.get('recaptcha')?.value">
+                <small class="text-danger">Por favor, resuelve el captcha.</small>
+            </div>
+        </div>
 
-        <button type="submit" class="btn btn-primary">Registrar</button>
+        <button (click)="volverSeleccionTipo()" class="btn-atras">
+            🠔
+        </button>
+
+        <button type="submit" class="submit-btn" [disabled]="formulario.invalid">REGISTRAR</button>
         <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
 
     </form>
 
     <!-- Formulario para Especialistas -->
-    <form *ngIf="tipoSeleccionado === 'especialista'" (ngSubmit)="onSubmit()" #registroForm="ngForm" class="formulario">
+    <form *ngIf="tipoSeleccionado === 'especialista'" (ngSubmit)="onSubmit()" [formGroup]="formulario" class="formulario">
         <div class="titulo-form">
             REGISTRATE COMO ESPECIALISTA
         </div>
         <div class="input-container">
             <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2FUsuarioW.png?alt=media&token=335845c9-ccf3-466f-a709-8dc973648919" alt="Nombre" class="input-icon">
-            <input id="nombre" [(ngModel)]="nombre" name="nombre" required type="text" placeholder="Nombre del especialista">
+            <input id="nombre" [(ngModel)]="nombre" [ngModelOptions]="{standalone: true}" name="nombre" required type="text" placeholder="Nombre del especialista">
         </div>
 
         <div class="input-container">
             <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fapellido.png?alt=media&token=12696ffd-50fb-4e7c-b079-90d1436f4813" alt="Apellido" class="input-icon">
-            <input id="apellido" [(ngModel)]="apellido" name="apellido" required type="text" placeholder="Apellido del especialista">
+            <input id="apellido" [(ngModel)]="apellido" [ngModelOptions]="{standalone: true}" name="apellido" required type="text" placeholder="Apellido del especialista">
         </div>
 
         <div class="input-container">
             <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fdni.png?alt=media&token=a3641431-2780-4aeb-9e29-d1b51a6b9897" alt="DNI" class="input-icon">
-            <input id="dni" [(ngModel)]="dni" name="dni" required type="text" placeholder="DNI del especialista">
+            <input id="dni" [(ngModel)]="dni" [ngModelOptions]="{standalone: true}" name="dni" required type="text" placeholder="DNI del especialista">
         </div>
 
         <div class="input-container">
             <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fedad.png?alt=media&token=c7d04542-0fc4-4a19-8bce-de28475ce8ab" alt="Edad" class="input-icon">
-            <input id="edad" [(ngModel)]="edad" name="edad" required type="number" placeholder="Edad del especialista">
+            <input id="edad" [(ngModel)]="edad" [ngModelOptions]="{standalone: true}" name="edad" required type="number" placeholder="Edad del especialista">
         </div>
 
         <div class="input-container especialidades-container">
             <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fespecialidad2.png?alt=media&token=fd641cdb-94ca-4067-a897-33552cfd4db4" alt="Especialidad" class="input-icon">
-            <input type="text" [(ngModel)]="nuevaEspecialidad" name="nuevaEspecialidad" placeholder="Agregar especialidad" class="input-especialidad">
+            <input type="text" [(ngModel)]="nuevaEspecialidad" [ngModelOptions]="{standalone: true}" name="nuevaEspecialidad" placeholder="Agregar especialidad" class="input-especialidad">
             <button type="button" (click)="agregarEspecialidad()" class="btn-agregar-especialidad">Agregar</button>
         </div>
         <div class="chips-sugerencias">
             <span class="chip-sugerencia" *ngFor="let sug of ['Odontologo', 'Pediatra', 'Kinesiologo', 'Cardiologo', 'Clínico', 'Dermatólogo', 'Traumatólogo']" (click)="nuevaEspecialidad = sug">{{sug}}</span>
+
         </div>
         <div class="especialidades-lista" *ngIf="especialidades.length > 0">
             <span *ngFor="let esp of especialidades; let i = index" class="especialidad-chip">
@@ -140,12 +153,12 @@
 
         <div class="input-container">
             <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2FCorreo.png?alt=media&token=893fb86d-e897-405c-9135-b92773f98cec" alt="Correo" class="input-icon">
-            <input id="correo" [(ngModel)]="correo" name="correo" required type="email" placeholder="Correo electrónico">
+            <input id="correo" [(ngModel)]="correo" [ngModelOptions]="{standalone: true}" name="correo" required type="email" placeholder="Correo electrónico">
         </div>
 
         <div class="input-container">
             <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2FCandadoW.png?alt=media&token=53af1ff2-1654-4f90-8585-92c8b31fd92e" alt="Contraseña" class="input-icon">
-            <input id="contrasena" [(ngModel)]="contrasena" name="contrasena" required type="password" placeholder="Contraseña">
+            <input id="contrasena" [(ngModel)]="contrasena" [ngModelOptions]="{standalone: true}" name="contrasena" required type="password" placeholder="Contraseña">
         </div>
 
         <div class="input-container">
@@ -161,7 +174,19 @@
             🠔
         </button>
 
-        <button type="submit" class="submit-btn">Registrar</button>
+        <div class="form-group captcha-container">
+            <ngx-recaptcha2
+                #captchaElem
+                [siteKey]="siteKey"
+                formControlName="recaptcha"
+                (success)="onCaptchaSuccess($event)">
+            </ngx-recaptcha2>
+            <div *ngIf="submitted && !formulario.get('recaptcha')?.value">
+                <small class="text-danger">Por favor, resuelve el captcha.</small>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="formulario.invalid">REGISTRAR</button>
         <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
     </form>
 
