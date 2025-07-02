@@ -9,8 +9,4 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent {
   constructor(private router: Router) {}
-
-  redirigirALogin() {
-    this.router.navigate(['/login']);
-  }
 }

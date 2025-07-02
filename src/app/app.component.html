@@ -3,7 +3,22 @@
         <div class="nav">
             <div class="button-group">
                 <button routerLink="home" routerLinkActive="active-route">INICIO</button>
-                <button routerLink="usuarios" routerLinkActive="active-route">USUARIOS</button>
+                <button *ngIf="esAdmin" routerLink="usuarios" routerLinkActive="active-route">USUARIOS</button>
+                <button *ngIf="esEspecialista" routerLink="miPerfil" routerLinkActive="active-route">MI PERFIL</button>
+                <button *ngIf="esEspecialista" routerLink="misTurnos" routerLinkActive="active-route">MIS TURNOS</button>
+                <button *ngIf="esPaciente" routerLink="misTurnos" routerLinkActive="active-route">MIS TURNOS</button>
+                <button *ngIf="esPaciente" routerLink="sacarTurno" routerLinkActive="active-route">SACAR TURNO</button>
+                <button *ngIf="esAdmin" routerLink="turnos" routerLinkActive="active-route">TURNOS</button>
+            </div>
+            <div class="menu-icon-container">
+                <button class="menu-icon-button" (click)="redirigirALogin()">
+                    <img
+                    src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Home%2FLogin.png?alt=media&token=67d89f2f-0da4-4f56-92e0-1e8137b2d9d9"
+                    alt="Login Icono"
+                    class="menu-icon-image"
+                    />
+                    <span class="login-text">{{ isLoggedIn ? 'Salir' : 'Login' }}</span>
+                </button>
             </div>
         </div>
 

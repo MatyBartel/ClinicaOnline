@@ -23,7 +23,6 @@ export class RegistroComponent {
   apellido: string = '';
   dni: string = '';
   edad: string = '';
-  especialidadSeleccionada: string = '';
   obraSocial: string = '';
   nuevaEspecialidad: string = '';
   errorMessage: string = '';
@@ -50,7 +49,7 @@ export class RegistroComponent {
     }
   };
 
-  especialidades: string[] = ['Odontologo', 'Pediatra', 'Kinesiologo', 'Cardiologo'];
+  especialidades: string[] = [];
 
   constructor(private router: Router) { }
 
@@ -59,10 +58,14 @@ export class RegistroComponent {
   }
 
   agregarEspecialidad() {
-    if (this.nuevaEspecialidad.trim() !== '') {
+    if (this.nuevaEspecialidad.trim() !== '' && !this.especialidades.includes(this.nuevaEspecialidad.trim())) {
       this.especialidades.push(this.nuevaEspecialidad.trim());
       this.nuevaEspecialidad = '';
     }
+  }
+
+  eliminarEspecialidad(index: number) {
+    this.especialidades.splice(index, 1);
   }
 
   onImageSelected(event: Event, tipo: 'paciente' | 'especialista', campo: string) {
@@ -143,6 +146,10 @@ export class RegistroComponent {
         this.errorMessage = 'Por favor, carga la imagen del perfil del especialista.';
         return;
       }
+      if (!this.especialidades || this.especialidades.length === 0) {
+        this.errorMessage = 'Selecciona al menos una especialidad.';
+        return;
+      }
     } else {
       this.errorMessage = 'Por favor, selecciona un tipo de usuario.';
       return;
@@ -188,7 +195,7 @@ export class RegistroComponent {
       if (this.tipoSeleccionado === 'paciente') {
         userData.obraSocial = this.obraSocial;
       } else if (this.tipoSeleccionado === 'especialista') {
-        userData.especialidad = this.especialidadSeleccionada;
+        userData.especialidades = this.especialidades;
         userData.aprobado = false;
       }
 

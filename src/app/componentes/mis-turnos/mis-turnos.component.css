@@ -1,0 +1,245 @@
+.mis-turnos-container {
+  max-width: 1200px;
+  margin: 36px auto;
+  padding: 30px 32px 22px 32px;
+  background: #f4f8fb;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #1976d220;
+  border: 1.5px solid #1976d2;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 22px;
+  color: #1976d2;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.filtro-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1.5px solid #b0c4de;
+  font-size: 1.05em;
+  margin-bottom: 18px;
+  background: #fff;
+  transition: border 0.2s;
+}
+.filtro-input:focus {
+  border: 1.5px solid #1976d2;
+  outline: none;
+}
+
+.tabla-turnos {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 6px #1976d220;
+}
+.tabla-turnos th, .tabla-turnos td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #e3eafc;
+}
+.tabla-turnos th {
+  background: #e3eafc;
+  color: #1976d2;
+  font-weight: 600;
+}
+.estado-pendiente {
+  color: #ff9800;
+  font-weight: 700;
+}
+.estado-confirmado {
+  color: #1976d2;
+  font-weight: 700;
+}
+.estado-realizado {
+  color: #388e3c;
+  font-weight: 700;
+}
+.estado-cancelado {
+  color: #d32f2f;
+  font-weight: 700;
+}
+.mensaje-vacio {
+  background: #e3eafc;
+  color: #1976d2;
+  border: 1px solid #b0c4de;
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  text-align: center;
+  font-size: 1.05em;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+.btn-cancelar, .btn-ver, .btn-encuesta, .btn-calificar {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 7px 14px;
+  margin: 0 2px;
+  font-size: 0.98em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-cancelar:hover {
+  background: #d32f2f;
+}
+.btn-ver:hover {
+  background: #388e3c;
+}
+.btn-encuesta:hover {
+  background: #ff9800;
+}
+.btn-calificar:hover {
+  background: #1976d2cc;
+}
+
+.modal-cancelar {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 10px;
+  padding: 28px 24px 18px 24px;
+  box-shadow: 0 2px 16px #1976d250;
+  min-width: 320px;
+  max-width: 90vw;
+  text-align: center;
+}
+.textarea-motivo {
+  width: 100%;
+  border-radius: 6px;
+  border: 1.5px solid #b0c4de;
+  padding: 8px;
+  font-size: 1em;
+  margin: 10px 0 6px 0;
+  resize: vertical;
+  min-height: 60px;
+}
+.error-motivo {
+  color: #d32f2f;
+  font-size: 0.98em;
+  margin-bottom: 8px;
+}
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+.btn-cancelar-modal {
+  background: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 7px 18px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-cancelar-modal:hover {
+  background: #b71c1c;
+}
+.btn-cerrar-modal {
+  background: #b0c4de;
+  color: #1976d2;
+  border: none;
+  border-radius: 5px;
+  padding: 7px 18px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-cerrar-modal:hover {
+  background: #e3eafc;
+}
+
+.btn-aceptar {
+  background: #388e3c;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 7px 14px;
+  margin: 0 2px;
+  font-size: 0.98em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-aceptar:hover {
+  background: #2e7031;
+}
+.btn-rechazar {
+  background: #ff9800;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 7px 14px;
+  margin: 0 2px;
+  font-size: 0.98em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-rechazar:hover {
+  background: #e65100;
+}
+
+.resena-texto {
+  background: #e3eafc;
+  color: #1976d2;
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin: 18px 0 10px 0;
+  font-size: 1.08em;
+  font-weight: 500;
+  text-align: left;
+  white-space: pre-line;
+}
+
+.limpiar-rechazados-container {
+  text-align: right;
+  margin-bottom: 10px;
+}
+.btn-limpiar-rechazados {
+  background: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: background 0.2s;
+}
+.btn-limpiar-rechazados:hover {
+  background: #b71c1c;
+}
+.emoji-tacho {
+  font-size: 1.2em;
+  vertical-align: middle;
+}
+
+.tabla-turnos td:last-child {
+  white-space: nowrap;
+} 

@@ -1,0 +1,68 @@
+<div class="perfil-container" *ngIf="especialista">
+  <div class="perfil-header">
+    <img *ngIf="(especialista.imagenPerfil && especialista.imagenPerfil.length > 0) || especialista.imagenUrl"
+         [src]="especialista.imagenPerfil ? especialista.imagenPerfil[0] : especialista.imagenUrl"
+         alt="Foto de perfil" class="perfil-img-header">
+    <h2>Mi Perfil</h2>
+  </div>
+  <div class="datos-personales">
+    <p class="dato-nombre"><strong>Nombre:</strong> {{especialista.nombre}}</p>
+    <p class="dato-apellido"><strong>Apellido:</strong> {{especialista.apellido}}</p>
+    <p class="dato-correo"><strong>Correo:</strong> {{especialista.correo}}</p>
+  </div>
+
+  <div class="horarios" *ngIf="getEspecialidades.length > 0">
+    <h3 class="titulo-horarios">Mis horarios</h3>
+    <!-- Selector de especialidad -->
+    <div class="selector-especialidad">
+      <label for="select-especialidad">Especialidad:</label>
+      <select id="select-especialidad" [(ngModel)]="especialidadSeleccionada" name="selectEspecialidad" (change)="onEspecialidadSeleccionadaChange()">
+        <option *ngFor="let esp of getEspecialidades" [ngValue]="esp">{{esp}}</option>
+      </select>
+    </div>
+    <form [formGroup]="horariosForm" (ngSubmit)="guardarHorarios()">
+      <label>Días disponibles:</label>
+      <select formControlName="dias" multiple>
+        <option *ngFor="let dia of diasSemana" [value]="dia">{{dia}}</option>
+      </select>
+      <label>Horas disponibles:</label>
+      <select formControlName="horas" multiple>
+        <option *ngFor="let hora of horas" [value]="hora">{{hora}}</option>
+      </select>
+      <button type="submit">Guardar horarios</button>
+    </form>
+
+    <div *ngIf="horariosCargados.length > 0" class="horarios-cargados">
+      <h4>Horarios ya cargados:</h4>
+      <ul>
+        <li *ngFor="let horario of horariosCargados">
+          {{horario.dia}} - {{horario.hora}}
+          <button type="button" (click)="confirmarEliminarHorario(horario.id, horario.dia, horario.hora)">×</button>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Modal de confirmación para eliminar horario -->
+    <div class="modal-eliminar" *ngIf="mostrarModalEliminar">
+      <div class="modal-contenido">
+        <p>¿Seguro que deseas eliminar el horario <strong>{{horarioAEliminar?.dia}} - {{horarioAEliminar?.hora}}</strong>?</p>
+        <button (click)="eliminarHorarioConfirmado()">Sí, eliminar</button>
+        <button (click)="cancelarEliminarHorario()">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- Modal de éxito al guardar horario -->
+    <div class="modal-exito" *ngIf="mostrarModalExito">
+      <div class="modal-contenido-exito">
+        <p>¡Horarios guardados exitosamente!</p>
+      </div>
+    </div>
+
+    <!-- Modal de error al intentar agregar horarios repetidos -->
+    <div class="modal-error" *ngIf="mostrarModalError">
+      <div class="modal-contenido-error">
+        <p>{{mensajeError}}</p>
+      </div>
+    </div>
+  </div>
+</div>

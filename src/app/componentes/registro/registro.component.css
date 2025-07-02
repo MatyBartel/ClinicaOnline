@@ -218,3 +218,86 @@ input[type="file"] {
     margin-bottom: 20px;
     margin-left: 20px;
 }
+
+.especialidades-container {
+    background: #23234a;
+    padding: 18px 10px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    gap: 12px;
+}
+.input-especialidad {
+    font-size: 18px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1.5px solid #1bb3c1;
+    background: #18182e;
+    color: #fff;
+    width: 60%;
+    margin-right: 10px;
+}
+.btn-agregar-especialidad {
+    background: #1bb3c1;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-agregar-especialidad:hover {
+    background: #148a96;
+}
+.chips-sugerencias {
+    margin: 10px 0 18px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.chip-sugerencia {
+    background: #e3f0ff;
+    color: #1976d2;
+    border-radius: 16px;
+    padding: 7px 18px;
+    font-size: 16px;
+    cursor: pointer;
+    border: 1.5px solid #1976d2;
+    transition: background 0.2s, color 0.2s;
+    user-select: none;
+}
+.chip-sugerencia:hover {
+    background: #1976d2;
+    color: #fff;
+}
+.especialidades-lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+.especialidad-chip {
+    background: #1976d2;
+    color: #fff;
+    border-radius: 16px;
+    padding: 7px 18px 7px 14px;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px #1976d233;
+}
+.chip-x {
+    background: transparent;
+    color: #fff;
+    border: none;
+    font-size: 20px;
+    margin-left: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+.chip-x:hover {
+    color: #e53935;
+}

@@ -1,0 +1,56 @@
+<div class="turno-container">
+  <h2>Sacar Turno</h2>
+  <form [formGroup]="turnoForm" (ngSubmit)="solicitarTurno()">
+    <div class="form-group">
+      <label>Especialidad:</label>
+      <select formControlName="especialidad" (change)="onEspecialidadChange()">
+        <option value="" disabled selected>Seleccione una especialidad</option>
+        <option *ngFor="let esp of especialidades" [value]="esp">{{esp}}</option>
+      </select>
+    </div>
+
+    <div class="form-group" *ngIf="especialistasFiltrados.length > 0">
+      <label>Especialista:</label>
+      <select formControlName="especialista" (change)="onEspecialistaChange()">
+        <option value="" disabled selected>Seleccione un especialista</option>
+        <option *ngFor="let e of especialistasFiltrados" [value]="e.id">{{e.nombre}} {{e.apellido}}</option>
+      </select>
+    </div>
+
+    <div *ngIf="especialistasFiltrados.length > 0 && diasDisponibles.length === 0" class="mensaje-vacio">
+      No hay días disponibles para este especialista.
+    </div>
+
+    <div class="form-group" *ngIf="diasDisponibles.length > 0">
+      <label>Día:</label>
+      <select formControlName="dia" (change)="onDiaChange()">
+        <option value="" disabled selected>Seleccione un día</option>
+        <option *ngFor="let dia of diasDisponibles" [value]="dia">{{dia}}</option>
+      </select>
+    </div>
+
+    <div *ngIf="diasDisponibles.length > 0 && horasDisponibles.length === 0 && turnoForm.value.dia" class="mensaje-vacio">
+      No hay horarios disponibles para el día seleccionado.
+    </div>
+
+    <div class="form-group" *ngIf="horasDisponibles.length > 0">
+      <label>Horario:</label>
+      <select formControlName="hora">
+        <option value="" disabled selected>Seleccione un horario</option>
+        <option *ngFor="let hora of horasDisponibles" [value]="hora">{{hora}}</option>
+      </select>
+    </div>
+
+    <div class="form-group" *ngIf="esAdmin">
+      <label>Paciente:</label>
+      <select formControlName="paciente">
+        <option value="" disabled selected>Seleccione un paciente</option>
+        <option *ngFor="let p of pacientes" [value]="p.id">{{p.nombre}} {{p.apellido}}</option>
+      </select>
+    </div>
+
+    <button type="submit" [disabled]="!turnoForm.valid">Solicitar Turno</button>
+  </form>
+
+  <div *ngIf="mensajeExito" class="mensaje-exito-turno">🎉 {{ mensajeExito }}</div>
+</div>

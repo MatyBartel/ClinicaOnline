@@ -4,6 +4,9 @@ import { PageNotFoundComponent } from './componentes/page-not-found/page-not-fou
 import { LoginComponent } from './componentes/login/login.component';
 import { RegistroComponent } from './componentes/registro/registro.component';
 import { UsuariosComponent } from './componentes/usuarios/usuarios.component';
+import { SacarTurnoComponent } from './componentes/sacar-turno/sacar-turno.component';
+import { MiPerfilComponent } from './componentes/mi-perfil/mi-perfil.component';
+import { MisTurnosComponent } from './componentes/mis-turnos/mis-turnos.component';
 
 
 
@@ -13,5 +16,10 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'registro', component: RegistroComponent },
     { path: 'usuarios', component: UsuariosComponent },
+    { path: 'sacarTurno', component: SacarTurnoComponent },
+    { path: 'miPerfil', component: MiPerfilComponent },
+    { path: 'misTurnos', component: MisTurnosComponent },
+    { path: 'turnos', component: MisTurnosComponent },
+
     { path: '**', component: PageNotFoundComponent },
 ];

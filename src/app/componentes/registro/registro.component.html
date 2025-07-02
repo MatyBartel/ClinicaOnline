@@ -71,29 +71,24 @@
             <input type="password" id="contrasena" [(ngModel)]="contrasena" name="contrasena" required placeholder="Contraseña">
         </div>
 
-        <!-- Foto de Perfil -->
         <div class="input-container">
             <label for="paciente-foto-perfil" class="file-label">
                 <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Frostro.png?alt=media&token=2cbc023d-44b2-4c27-a525-32986057c50b" alt="Foto de Perfil" class="input-icon">
                 <span>Seleccione una foto de su rostro</span>
                 <input type="file" (change)="onImageSelected($event, 'paciente', 'fotoPerfil')" id="paciente-foto-perfil" accept="image/*" required>
             </label>
-            <!-- Vista previa de la imagen seleccionada -->
             <img *ngIf="imagenesPerfilPreview.paciente.fotoPerfil" [src]="imagenesPerfilPreview.paciente.fotoPerfil" alt="Vista previa" class="preview-image">
         </div>
         
-        <!-- Foto de Identificación -->
         <div class="input-container">
             <label for="paciente-foto-identificacion" class="file-label">
                 <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fdni2.png?alt=media&token=80b6649a-af88-4d5e-bde2-8412d5b93726" alt="Foto de Identificación" class="input-icon">
                 <span>Seleccione una foto de su dni</span>
                 <input type="file" (change)="onImageSelected($event, 'paciente', 'fotoPerfil2')" id="paciente-foto-identificacion" accept="image/*" required>
             </label>
-            <!-- Vista previa de la imagen seleccionada -->
             <img *ngIf="imagenesPerfilPreview.paciente.fotoPerfil2" [src]="imagenesPerfilPreview.paciente.fotoPerfil2" alt="Vista previa" class="preview-image">
         </div>
 
-                <!-- Botón de volver atrás en el formulario -->
                 <button (click)="volverSeleccionTipo()" class="btn-atras">
                     🠔
                 </button>
@@ -128,20 +123,19 @@
             <input id="edad" [(ngModel)]="edad" name="edad" required type="number" placeholder="Edad del especialista">
         </div>
 
-        <div class="input-container">
+        <div class="input-container especialidades-container">
             <img src="https://firebasestorage.googleapis.com/v0/b/tpclinica-bartel.appspot.com/o/Registro%2FFormularios%2Fespecialidad2.png?alt=media&token=fd641cdb-94ca-4067-a897-33552cfd4db4" alt="Especialidad" class="input-icon">
-            <select id="especialidad" [(ngModel)]="especialidadSeleccionada" name="especialidad" required>
-                <option value="">Seleccione una especialidad</option>
-                <option *ngFor="let especialidad of especialidades" [value]="especialidad">{{ especialidad }}</option>
-                <option value="otra">Otra...</option>
-            </select>
+            <input type="text" [(ngModel)]="nuevaEspecialidad" name="nuevaEspecialidad" placeholder="Agregar especialidad" class="input-especialidad">
+            <button type="button" (click)="agregarEspecialidad()" class="btn-agregar-especialidad">Agregar</button>
         </div>
-
-        <!-- Input para agregar nueva especialidad si selecciona "Otra..." -->
-        <div class="input-container" *ngIf="especialidadSeleccionada === 'otra'">
-            <img src="https://cdn-icons-png.flaticon.com/512/1828/1828817.png" alt="Nueva especialidad" class="input-icon">
-            <input type="text" [(ngModel)]="nuevaEspecialidad" name="nuevaEspecialidad" placeholder="Escribe otra especialidad">
-            <button type="button" (click)="agregarEspecialidad(); especialidadSeleccionada = nuevaEspecialidad;">Agregar</button>
+        <div class="chips-sugerencias">
+            <span class="chip-sugerencia" *ngFor="let sug of ['Odontologo', 'Pediatra', 'Kinesiologo', 'Cardiologo', 'Clínico', 'Dermatólogo', 'Traumatólogo']" (click)="nuevaEspecialidad = sug">{{sug}}</span>
+        </div>
+        <div class="especialidades-lista" *ngIf="especialidades.length > 0">
+            <span *ngFor="let esp of especialidades; let i = index" class="especialidad-chip">
+                {{esp}}
+                <button type="button" (click)="eliminarEspecialidad(i)" class="chip-x">×</button>
+            </span>
         </div>
 
         <div class="input-container">

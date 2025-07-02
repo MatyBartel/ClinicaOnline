@@ -16,45 +16,8 @@
 
 .logo {
     width: 100px;
+    margin-top: 20px;
 }
-
-.menu-icon-container {
-    position: relative;
-    display: inline-block;
-}
-
-.menu-icon {
-    cursor: pointer;
-    width: 80px;
-}
-
-/* Estilo del botón del icono del menú */
-.menu-icon-button {
-    background-color: rgb(255, 255, 255);
-    border: none;
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 50%;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.menu-icon-button:hover {
-    background-color: #007bff; /* Fondo semitransparente al pasar */
-    transform: scale(1.1); /* Aumento leve para dar efecto de interacción */
-}
-
-/* Estilo de la imagen del icono */
-.menu-icon-image {
-    width: 40px;
-    height: 40px;
-    object-fit: contain; /* Asegura que la imagen mantenga sus proporciones */
-    transition: transform 0.3s; /* Suaviza el efecto de hover */
-}
-
-.menu-icon-button:hover .menu-icon-image {
-    transform: rotate(15deg); /* Pequeña rotación en hover para un efecto extra */
-}
-
 
 /* Sección de bienvenida */
 .welcome-section {

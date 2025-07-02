@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 @Component({
   selector: 'app-root',
@@ -13,17 +14,35 @@ import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 export class AppComponent implements OnInit {
   title = 'rutas';
   isLoggedIn: boolean = false;
+  esAdmin: boolean = false;
+  esEspecialista: boolean = false;
+  esPaciente: boolean = false;
 
-  constructor(public router: Router) {}
+  constructor(public router: Router, private renderer: Renderer2) {}
 
   ngOnInit() {
     const auth = getAuth();
-    
-    onAuthStateChanged(auth, (user) => {
+    const db = getFirestore();
+    onAuthStateChanged(auth, async (user) => {
+      this.isLoggedIn = !!user;
       if (user) {
-        this.isLoggedIn = true;
+        const adminDoc = await getDoc(doc(db, 'administradores', user.uid));
+        this.esAdmin = adminDoc.exists();
+        const especialistaDoc = await getDoc(doc(db, 'especialistas', user.uid));
+        this.esEspecialista = especialistaDoc.exists();
+        this.esPaciente = !this.esAdmin && !this.esEspecialista;
       } else {
-        this.isLoggedIn = false;
+        this.esAdmin = false;
+        this.esEspecialista = false;
+        this.esPaciente = false;
+      }
+    });
+    this.router.events.subscribe(() => {
+      const rutasAzul = ['/misTurnos', '/sacarTurno', '/miPerfil', '/usuarios', '/turnos'];
+      if (rutasAzul.includes(this.router.url)) {
+        this.renderer.addClass(document.body, 'fondo-azul-oscuro');
+      } else {
+        this.renderer.removeClass(document.body, 'fondo-azul-oscuro');
       }
     });
   }
@@ -48,5 +67,12 @@ export class AppComponent implements OnInit {
 
   get isLoginOrRegister() {
     return this.router.url === '/login' || this.router.url === '/registro';
+  }
+  redirigirALogin() {
+      if (this.isLoggedIn) {
+    this.logout();
+  } else {
+    this.router.navigate(['/login']);
+  }
   }
 }
