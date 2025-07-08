@@ -3,11 +3,13 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { CommonModule } from '@angular/common';
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { LoadingSpinnerComponent } from './componentes/loading-spinner/loading-spinner.component';
+import { TransicionGlobalComponent } from './componentes/transicion-global/transicion-global.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, LoadingSpinnerComponent, TransicionGlobalComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

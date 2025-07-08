@@ -36,6 +36,27 @@ export class MisTurnosComponent implements OnInit {
   mostrarModalMotivo: boolean = false;
   motivoAMostrar: string = '';
 
+  // Variables para historia clínica
+  altura: string = '';
+  peso: string = '';
+  temperatura: string = '';
+  presion: string = '';
+  datosDinamicos: { clave: string, valor: string }[] = [];
+  claveDinamica: string = '';
+  valorDinamico: string = '';
+  errorHistoriaClinica: string = '';
+
+  mensajeExito: string = '';
+
+  mostrarModalEncuesta: boolean = false;
+  comentarioEncuesta: string = '';
+  estrellasEncuesta: number = 0;
+  errorEncuesta: string = '';
+
+  mostrarModalVerEncuesta: boolean = false;
+  encuestaComentarioVer: string = '';
+  encuestaEstrellasVer: number = 0;
+
   async ngOnInit() {
     const user = getAuth().currentUser;
     if (user) {
@@ -75,25 +96,28 @@ export class MisTurnosComponent implements OnInit {
       this.turnosFiltrados = this.turnos;
       return;
     }
-    if (this.esPaciente) {
-      this.turnosFiltrados = this.turnos.filter(turno =>
-        (turno.especialidad && turno.especialidad.toLowerCase().includes(filtro)) ||
-        (turno.especialistaNombre && turno.especialistaNombre.toLowerCase().includes(filtro)) ||
-        (turno.especialistaApellido && turno.especialistaApellido.toLowerCase().includes(filtro))
-      );
-    } else if (this.esEspecialista) {
-      this.turnosFiltrados = this.turnos.filter(turno =>
-        (turno.especialidad && turno.especialidad.toLowerCase().includes(filtro)) ||
-        (turno.pacienteNombre && turno.pacienteNombre.toLowerCase().includes(filtro)) ||
-        (turno.pacienteApellido && turno.pacienteApellido.toLowerCase().includes(filtro))
-      );
-    } else if (this.esAdmin) {
-      this.turnosFiltrados = this.turnos.filter(turno =>
-        (turno.especialidad && turno.especialidad.toLowerCase().includes(filtro)) ||
-        (turno.especialistaNombre && turno.especialistaNombre.toLowerCase().includes(filtro)) ||
-        (turno.especialistaApellido && turno.especialistaApellido.toLowerCase().includes(filtro))
-      );
-    }
+    this.turnosFiltrados = this.turnos.filter(turno => {
+      let texto = '';
+      // Concatenar todos los campos principales del turno
+      for (const key in turno) {
+        if (typeof turno[key] === 'string' || typeof turno[key] === 'number') {
+          texto += ' ' + turno[key];
+        }
+      }
+      // Incluir historia clínica si existe
+      if (turno.historiaClinica) {
+        texto += ' ' + (turno.historiaClinica.altura || '');
+        texto += ' ' + (turno.historiaClinica.peso || '');
+        texto += ' ' + (turno.historiaClinica.temperatura || '');
+        texto += ' ' + (turno.historiaClinica.presion || '');
+        if (Array.isArray(turno.historiaClinica.datosDinamicos)) {
+          turno.historiaClinica.datosDinamicos.forEach((dato: any) => {
+            texto += ' ' + (dato.clave || '') + ' ' + (dato.valor || '');
+          });
+        }
+      }
+      return texto.toLowerCase().includes(filtro);
+    });
   }
 
   // --- ACCIONES PARA PACIENTE ---
@@ -161,6 +185,15 @@ export class MisTurnosComponent implements OnInit {
     this.resenaFinal = '';
     this.errorMotivo = '';
     this.mostrarModalFinalizar = true;
+    // Limpiar historia clínica
+    this.altura = '';
+    this.peso = '';
+    this.temperatura = '';
+    this.presion = '';
+    this.datosDinamicos = [];
+    this.claveDinamica = '';
+    this.valorDinamico = '';
+    this.errorHistoriaClinica = '';
   }
   cerrarModalFinalizar() {
     this.mostrarModalFinalizar = false;
@@ -169,16 +202,36 @@ export class MisTurnosComponent implements OnInit {
     this.errorMotivo = '';
   }
   async confirmarFinalizacion() {
-    if (!this.resenaFinal.trim()) {
+    this.errorHistoriaClinica = '';
+    this.errorMotivo = '';
+    const alturaStr = this.altura !== undefined && this.altura !== null ? String(this.altura) : '';
+    const pesoStr = this.peso !== undefined && this.peso !== null ? String(this.peso) : '';
+    const temperaturaStr = this.temperatura !== undefined && this.temperatura !== null ? String(this.temperatura) : '';
+    const presionStr = this.presion !== undefined && this.presion !== null ? String(this.presion) : '';
+    if (!alturaStr.trim() || !pesoStr.trim() || !temperaturaStr.trim() || !presionStr.trim()) {
+      this.errorHistoriaClinica = 'Debes completar todos los datos fijos de la historia clínica.';
+      return;
+    }
+    if (!this.resenaFinal || !String(this.resenaFinal).trim()) {
       this.errorMotivo = 'Debes ingresar una reseña o comentario.';
       return;
     }
+    const historiaClinica = {
+      altura: alturaStr,
+      peso: pesoStr,
+      temperatura: temperaturaStr,
+      presion: presionStr,
+      datosDinamicos: this.datosDinamicos
+    };
     const turnoRef = doc(this.firestore, 'Turnos', this.turnoAOperar.id);
     await updateDoc(turnoRef, {
       estado: 'realizado',
-      resena: this.resenaFinal.trim()
+      resena: String(this.resenaFinal).trim(),
+      historiaClinica: historiaClinica
     });
     this.cerrarModalFinalizar();
+    this.mensajeExito = '¡Turno finalizado con éxito!';
+    setTimeout(() => { this.mensajeExito = ''; }, 3500);
     await this.cargarTurnos();
   }
 
@@ -222,5 +275,66 @@ export class MisTurnosComponent implements OnInit {
   // Acción cancelar turno para admin
   puedeCancelarAdmin(turno: any): boolean {
     return this.esAdmin && !['aceptado', 'realizado', 'rechazado'].includes(turno.estado);
+  }
+
+  // Métodos para datos dinámicos
+  agregarDatoDinamico() {
+    if (this.claveDinamica.trim() && this.valorDinamico.trim() && this.datosDinamicos.length < 3) {
+      this.datosDinamicos.push({ clave: this.claveDinamica.trim(), valor: this.valorDinamico.trim() });
+      this.claveDinamica = '';
+      this.valorDinamico = '';
+      this.errorHistoriaClinica = '';
+    } else if (this.datosDinamicos.length >= 3) {
+      this.errorHistoriaClinica = 'Solo puedes agregar hasta 3 datos dinámicos.';
+    } else {
+      this.errorHistoriaClinica = 'Debes completar clave y valor.';
+    }
+  }
+  eliminarDatoDinamico(index: number) {
+    this.datosDinamicos.splice(index, 1);
+    this.errorHistoriaClinica = '';
+  }
+
+  abrirModalEncuesta(turno: any) {
+    this.turnoAOperar = turno;
+    this.comentarioEncuesta = '';
+    this.estrellasEncuesta = 0;
+    this.errorEncuesta = '';
+    this.mostrarModalEncuesta = true;
+  }
+  cerrarModalEncuesta() {
+    this.mostrarModalEncuesta = false;
+    this.turnoAOperar = null;
+    this.comentarioEncuesta = '';
+    this.estrellasEncuesta = 0;
+    this.errorEncuesta = '';
+  }
+  async confirmarEncuesta() {
+    this.errorEncuesta = '';
+    if (!this.comentarioEncuesta.trim() || this.estrellasEncuesta < 1) {
+      this.errorEncuesta = 'Debes dejar un comentario y seleccionar una cantidad de estrellas.';
+      return;
+    }
+    const turnoRef = doc(this.firestore, 'Turnos', this.turnoAOperar.id);
+    await updateDoc(turnoRef, {
+      encuestaComentario: this.comentarioEncuesta.trim(),
+      encuestaEstrellas: this.estrellasEncuesta,
+      encuestaCompletada: true
+    });
+    this.cerrarModalEncuesta();
+    this.mensajeExito = '¡Encuesta enviada con éxito!';
+    setTimeout(() => { this.mensajeExito = ''; }, 3500);
+    await this.cargarTurnos();
+  }
+
+  abrirModalVerEncuesta(turno: any) {
+    this.encuestaComentarioVer = turno.encuestaComentario || 'Sin comentario.';
+    this.encuestaEstrellasVer = turno.encuestaEstrellas || 0;
+    this.mostrarModalVerEncuesta = true;
+  }
+  cerrarModalVerEncuesta() {
+    this.mostrarModalVerEncuesta = false;
+    this.encuestaComentarioVer = '';
+    this.encuestaEstrellasVer = 0;
   }
 } 

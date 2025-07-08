@@ -1,4 +1,4 @@
-<div class="perfil-container" *ngIf="especialista">
+<div class="perfil-container" *ngIf="!esPaciente && especialista">
   <div class="perfil-header">
     <img *ngIf="(especialista.imagenPerfil && especialista.imagenPerfil.length > 0) || especialista.imagenUrl"
          [src]="especialista.imagenPerfil ? especialista.imagenPerfil[0] : especialista.imagenUrl"
@@ -10,7 +10,6 @@
     <p class="dato-apellido"><strong>Apellido:</strong> {{especialista.apellido}}</p>
     <p class="dato-correo"><strong>Correo:</strong> {{especialista.correo}}</p>
   </div>
-
   <div class="horarios" *ngIf="getEspecialidades.length > 0">
     <h3 class="titulo-horarios">Mis horarios</h3>
     <!-- Selector de especialidad -->
@@ -31,7 +30,6 @@
       </select>
       <button type="submit">Guardar horarios</button>
     </form>
-
     <div *ngIf="horariosCargados.length > 0" class="horarios-cargados">
       <h4>Horarios ya cargados:</h4>
       <ul>
@@ -41,7 +39,6 @@
         </li>
       </ul>
     </div>
-
     <!-- Modal de confirmación para eliminar horario -->
     <div class="modal-eliminar" *ngIf="mostrarModalEliminar">
       <div class="modal-contenido">
@@ -50,14 +47,12 @@
         <button (click)="cancelarEliminarHorario()">Cancelar</button>
       </div>
     </div>
-
     <!-- Modal de éxito al guardar horario -->
     <div class="modal-exito" *ngIf="mostrarModalExito">
       <div class="modal-contenido-exito">
         <p>¡Horarios guardados exitosamente!</p>
       </div>
     </div>
-
     <!-- Modal de error al intentar agregar horarios repetidos -->
     <div class="modal-error" *ngIf="mostrarModalError">
       <div class="modal-contenido-error">
@@ -66,3 +61,90 @@
     </div>
   </div>
 </div>
+
+<!-- DATOS PERSONALES PACIENTE -->
+<div *ngIf="esPaciente && datosPaciente" class="datos-personales-paciente">
+  <div class="perfil-paciente-header">
+    <img *ngIf="datosPaciente.imagenPerfil" [src]="datosPaciente.imagenPerfil" alt="Foto de perfil" class="foto-perfil-circulo">
+    <h2>Mi Perfil</h2>
+  </div>
+  <p><strong>Nombre:</strong> {{datosPaciente.nombre}} {{datosPaciente.apellido}}</p>
+  <p><strong>Correo:</strong> {{datosPaciente.correo}}</p>
+</div>
+<!-- HISTORIA CLÍNICA DEL PACIENTE -->
+<div *ngIf="esPaciente">
+  <div class="historia-clinica-section" *ngIf="historiaClinicaTurnos.length > 0">
+    <h3>Mi Historia Clínica</h3>
+    
+    <!-- Sección para descargar PDF -->
+    <div class="descargar-pdf-section">
+      <h4>Descargar Historia Clínica en PDF</h4>
+      <div class="filtros-pdf">
+        <label for="especialidad-pdf">Filtrar por especialidad:</label>
+        <select id="especialidad-pdf" [(ngModel)]="especialidadSeleccionadaPDF" (change)="onEspecialidadPDFChange()">
+          <option value="">Todas las especialidades</option>
+          <option *ngFor="let esp of especialidadesDisponibles" [value]="esp">{{esp}}</option>
+        </select>
+        <button class="btn-descargar-pdf" (click)="descargarHistoriaClinicaPDF()">
+          📄 Descargar PDF
+        </button>
+      </div>
+    </div>
+    
+    <table class="tabla-historia-clinica">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Especialista</th>
+          <th>Especialidad</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let turno of historiaClinicaTurnos">
+          <td>{{ turno.FechaTurno }}</td>
+          <td>{{ turno.especialistaNombre }} {{ turno.especialistaApellido }}</td>
+          <td>{{ turno.especialidad }}</td>
+          <td><button (click)="abrirModalHistoriaClinica(turno)">Ver Detalles</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div *ngIf="historiaClinicaTurnos.length === 0" class="mensaje-sin-historia">
+    No hay historia clínica aún.
+  </div>
+</div>
+<!-- Modal de detalles de historia clínica -->
+<div class="modal-cancelar" *ngIf="mostrarModalHistoriaClinica">
+  <div class="modal-content">
+    <h3>Historia Clínica del Turno</h3>
+    <div *ngIf="turnoHistoriaSeleccionado?.historiaClinica">
+      <div class="datos-fijos-hc">
+        <p><strong>Altura:</strong> {{ turnoHistoriaSeleccionado.historiaClinica.altura }} cm</p>
+        <p><strong>Peso:</strong> {{ turnoHistoriaSeleccionado.historiaClinica.peso }} kg</p>
+        <p><strong>Temperatura:</strong> {{ turnoHistoriaSeleccionado.historiaClinica.temperatura }} °C</p>
+        <p><strong>Presión:</strong> {{ turnoHistoriaSeleccionado.historiaClinica.presion }}</p>
+      </div>
+      <div *ngIf="turnoHistoriaSeleccionado.historiaClinica.datosDinamicos && turnoHistoriaSeleccionado.historiaClinica.datosDinamicos.length > 0">
+        <h4>Datos adicionales</h4>
+        <ul>
+          <li *ngFor="let dato of turnoHistoriaSeleccionado.historiaClinica.datosDinamicos">
+            <strong>{{ dato.clave }}:</strong> {{ dato.valor }}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div *ngIf="!turnoHistoriaSeleccionado?.historiaClinica">
+      <p>No hay datos de historia clínica para este turno.</p>
+    </div>
+    <div class="modal-actions">
+      <button (click)="cerrarModalHistoriaClinica()" class="btn-cerrar-historia">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<style>
+:host {
+  font-family: 'Montserrat', 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+</style>

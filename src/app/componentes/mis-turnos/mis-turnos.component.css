@@ -66,6 +66,10 @@ h2 {
   color: #d32f2f;
   font-weight: 700;
 }
+.estado-rechazado {
+  color: #d32f2f !important;
+  font-weight: 700;
+}
 .mensaje-vacio {
   background: #e3eafc;
   color: #1976d2;
@@ -133,8 +137,14 @@ h2 {
 }
 .error-motivo {
   color: #d32f2f;
-  font-size: 0.98em;
-  margin-bottom: 8px;
+  background: #ffebee;
+  border-radius: 6px;
+  padding: 5px 12px;
+  margin: 8px 0 0 0;
+  font-size: 15px;
+  text-align: center;
+  max-width: 480px;
+  min-width: 220px;
 }
 .modal-actions {
   display: flex;
@@ -242,4 +252,278 @@ h2 {
 
 .tabla-turnos td:last-child {
   white-space: nowrap;
-} 
+}
+
+.btn-finalizar {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 9px 20px;
+  margin: 0 2px;
+  font-size: 1.08em;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #1976d220;
+  transition: background 0.2s, box-shadow 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-finalizar:hover {
+  background: #136100;
+}
+
+.estado-aceptado {
+  color: #388e3c;
+  font-weight: 700;
+}
+
+/* --- Historia Clínica Modal --- */
+.historia-clinica-section {
+  margin: 20px 0 10px 0;
+  padding: 24px 18px;
+  background: #18304b;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.13);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.historia-clinica-section h4 {
+  margin-bottom: 16px;
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  font-size: 2.1rem;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.13);
+  text-transform: uppercase;
+}
+.datos-fijos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.datos-fijos label {
+  display: flex;
+  flex-direction: column;
+  font-size: 15px;
+  color: #e3eaf5;
+  min-width: 120px;
+  align-items: flex-start;
+}
+.datos-fijos input {
+  margin-top: 4px;
+  padding: 6px 10px;
+  border: 1.5px solid #406080;
+  border-radius: 6px;
+  font-size: 15px;
+  background: #223a57;
+  color: #fff;
+  transition: border 0.2s;
+}
+.datos-fijos input:focus {
+  border: 2px solid #42a5f5;
+  background: #29405e;
+  outline: none;
+}
+.datos-dinamicos {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  width: 100%;
+  justify-content: center;
+}
+.datos-dinamicos input {
+  padding: 6px 10px;
+  border: 1.5px solid #406080;
+  border-radius: 6px;
+  font-size: 15px;
+  background: #223a57;
+  color: #fff;
+  width: 110px;
+}
+.datos-dinamicos input:focus {
+  border: 2px solid #42a5f5;
+  background: #29405e;
+  outline: none;
+}
+.datos-dinamicos button {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-weight: 500;
+}
+.datos-dinamicos button:disabled {
+  background: #bcd0e0;
+  color: #fff;
+  cursor: not-allowed;
+}
+.chips-dinamicos {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.chip-dinamico {
+  background: #25446a;
+  color: #90caf9;
+  border-radius: 16px;
+  padding: 5px 14px 5px 12px;
+  font-size: 15px;
+  font-weight: 500;
+  box-shadow: 0 1px 4px rgba(25,118,210,0.13);
+}
+.chip-dinamico button {
+  background: none;
+  border: none;
+  color: #90caf9;
+  font-size: 15px;
+  cursor: pointer;
+  margin-left: 2px;
+  padding: 0 2px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.chip-dinamico button:hover {
+  background: #18304b;
+}
+/* --- Botón Finalizar --- */
+.btn-finalizar-modal {
+  background: linear-gradient(90deg, #10213a 60%, #25446a 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 44px;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-right: 10px;
+  box-shadow: 0 2px 12px rgba(25,118,210,0.13);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+.btn-finalizar-modal:hover {
+  background: linear-gradient(90deg, #0d1726 60%, #18304b 100%);
+  transform: translateY(-2px) scale(1.04);
+}
+
+/* Centrar el modal y el formulario */
+.modal-cancelar .modal-content form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Título grande para el modal de finalizar turno */
+.modal-cancelar .modal-content h3 {
+  font-size: 2.3rem;
+  color: #18304b;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 18px;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.datos-dinamicos label {
+  color: #e3eaf5 !important;
+  font-weight: 500;
+  font-size: 15px;
+  margin-right: 6px;
+}
+
+.mensaje-exito-turno {
+  margin: 18px auto 10px auto;
+  padding: 14px 32px;
+  background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+  color: #155724;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(67,233,123,0.13);
+  text-align: center;
+  max-width: 420px;
+  letter-spacing: 1px;
+  animation: fadeInOut 3.5s;
+}
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+.estrellas-encuesta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 10px 0;
+  font-size: 1.15rem;
+}
+.estrella {
+  font-size: 2.1rem;
+  color: #b0b0b0;
+  cursor: pointer;
+  transition: color 0.2s, transform 0.1s;
+  user-select: none;
+}
+.estrella.selected {
+  color: #ffd600;
+  text-shadow: 0 2px 8px rgba(255,214,0,0.18);
+  transform: scale(1.15);
+}
+.estrella:hover {
+  color: #ffe082;
+  transform: scale(1.18);
+}
+
+.ver-encuesta-contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0 10px 0;
+}
+.ver-encuesta-estrellas {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.ver-encuesta-estrellas .estrella {
+  font-size: 2.1rem;
+  color: #b0b0b0;
+  user-select: none;
+}
+.ver-encuesta-estrellas .estrella.selected {
+  color: #ffd600;
+  text-shadow: 0 2px 8px rgba(255,214,0,0.18);
+}
+.ver-encuesta-comentario {
+  background: #f7fafd;
+  border-radius: 8px;
+  padding: 10px 18px;
+  color: #18304b;
+  font-size: 1.08rem;
+  min-width: 220px;
+  max-width: 340px;
+  box-shadow: 0 1px 6px rgba(24,48,75,0.07);
+  text-align: left;
+}
+.ver-encuesta-comentario strong {
+  color: #1976d2;
+  font-weight: 700;
+  margin-bottom: 4px;
+  display: block;
+}

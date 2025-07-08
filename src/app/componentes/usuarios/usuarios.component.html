@@ -1,38 +1,32 @@
 <div *ngIf="usuarioActual?.tipo === 'administrador'; else noAcceso" class="usuarios-container">
   <h2>Gestión de Usuarios</h2>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Tipo</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Mail</th>
-        <th>DNI</th>
-        <th>Edad</th>
-        <th *ngIf="tieneEspecialistas()">Estado</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let u of usuarios">
-        <td>{{ u.tipo }}</td>
-        <td>{{ u.nombre }}</td>
-        <td>{{ u.apellido }}</td>
-        <td>{{ u.correo }}</td>
-        <td>{{ u.dni }}</td>
-        <td>{{ u.edad }}</td>
-        <td *ngIf="u.tipo === 'especialista'">
-          {{ u.aprobado ? 'Habilitado' : 'Inhabilitado' }}
-        </td>
-        <td>
-          <button *ngIf="u.tipo === 'especialista'" (click)="cambiarEstadoEspecialista(u)">
-            {{ u.aprobado ? 'Inhabilitar' : 'Habilitar' }}
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="boton-centrado">
+    <button (click)="exportarUsuariosExcel()">Descargar Excel de Usuarios</button>
+  </div>
+
+  <div class="usuarios-cards-container">
+    <div *ngFor="let u of usuarios" class="usuario-card">
+      <div class="usuario-card-header">
+        <img *ngIf="u.imagenPerfil && u.imagenPerfil.length > 0" [src]="u.imagenPerfil[0]" alt="Foto" class="usuario-card-img">
+        <div class="usuario-card-info">
+          <h3>{{ u.nombre }} {{ u.apellido }}</h3>
+          <p><strong>Tipo:</strong> {{ u.tipo }}</p>
+          <p><strong>Mail:</strong> {{ u.correo }}</p>
+          <p><strong>DNI:</strong> {{ u.dni }}</p>
+          <p><strong>Edad:</strong> {{ u.edad }}</p>
+          <p *ngIf="u.tipo === 'especialista'"><strong>Estado:</strong> {{ u.aprobado ? 'Habilitado' : 'Inhabilitado' }}</p>
+        </div>
+      </div>
+      <div class="usuario-card-actions">
+        <button *ngIf="u.tipo === 'especialista'" (click)="cambiarEstadoEspecialista(u)">
+          {{ u.aprobado ? 'Inhabilitar' : 'Habilitar' }}
+        </button>
+        <button *ngIf="u.tipo === 'paciente'" (click)="exportarTurnosPacienteExcel(u)">Descargar Excel de Turnos</button>
+        <button *ngIf="u.tipo === 'paciente'" (click)="verHistoriaClinica(u)">Ver Historia Clínica</button>
+      </div>
+    </div>
+  </div>
 
   <div class="boton-centrado">
     <button (click)="mostrarFormularioAdmin = !mostrarFormularioAdmin">
@@ -67,6 +61,54 @@
     <div *ngIf="adminError" class="error">{{ adminError }}</div>
     <div *ngIf="adminSuccess" class="success">{{ adminSuccess }}</div>
   </form>
+
+  <!-- Modal historia clínica admin -->
+  <div class="modal-cancelar" *ngIf="mostrarModalHistoriaClinica">
+    <div class="modal-content">
+      <h3>Historia Clínica de {{pacienteHistoriaSeleccionado?.nombre}} {{pacienteHistoriaSeleccionado?.apellido}}</h3>
+      <div *ngIf="historiaClinicaTurnos.length > 0">
+        <table class="tabla-historia-clinica">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Especialista</th>
+              <th>Especialidad</th>
+              <th>Altura</th>
+              <th>Peso</th>
+              <th>Temperatura</th>
+              <th>Presión</th>
+              <th>Datos adicionales</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let turno of historiaClinicaTurnos">
+              <td>{{ turno.FechaTurno }}</td>
+              <td>{{ turno.especialistaNombre }} {{ turno.especialistaApellido }}</td>
+              <td>{{ turno.especialidad }}</td>
+              <td>{{ turno.historiaClinica?.altura }}</td>
+              <td>{{ turno.historiaClinica?.peso }}</td>
+              <td>{{ turno.historiaClinica?.temperatura }}</td>
+              <td>{{ turno.historiaClinica?.presion }}</td>
+              <td>
+                <ul *ngIf="turno.historiaClinica?.datosDinamicos?.length > 0">
+                  <li *ngFor="let dato of turno.historiaClinica.datosDinamicos">
+                    <strong>{{ dato.clave }}:</strong> {{ dato.valor }}
+                  </li>
+                </ul>
+                <span *ngIf="!turno.historiaClinica?.datosDinamicos || turno.historiaClinica?.datosDinamicos.length === 0">-</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="historiaClinicaTurnos.length === 0">
+        <p>No hay historia clínica para este paciente.</p>
+      </div>
+      <div class="modal-actions">
+        <button (click)="cerrarModalHistoriaClinica()" class="btn-cerrar-historia">Cerrar</button>
+      </div>
+    </div>
+  </div>
 </div>
 <ng-template #noAcceso>
   <p>No tiene acceso a esta sección.</p>

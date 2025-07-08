@@ -1,12 +1,15 @@
 <div class="mis-turnos-container">
   <h2 *ngIf="esPaciente">🗓️ Mis Turnos</h2>
   <h2 *ngIf="esEspecialista">Turnos Asignados</h2>
+  <div *ngIf="mensajeExito" class="mensaje-exito-turno">
+    {{ mensajeExito }}
+  </div>
   <input type="text" [(ngModel)]="filtro" (input)="aplicarFiltro()" placeholder="🔎 Buscar por especialidad o {{esPaciente ? 'especialista' : 'paciente'}}..." class="filtro-input" />
 
   <!-- Botón limpiar rechazados -->
   <div *ngIf="esEspecialista && tieneRechazados()" class="limpiar-rechazados-container">
     <button class="btn-limpiar-rechazados" (click)="limpiarRechazados()">
-      <span class="emoji-tacho">🗑️</span> Limpiar Rechazados
+      <span class="emoji-tacho"></span> Limpiar Rechazados
     </button>
   </div>
 
@@ -41,52 +44,52 @@
         <td>
           <span class="estado-{{ turno.estado }}">
             <ng-container [ngSwitch]="turno.estado">
-              <span *ngSwitchCase="'pendiente'">⏳ Pendiente</span>
-              <span *ngSwitchCase="'confirmado'">✅ Confirmado</span>
-              <span *ngSwitchCase="'aceptado'">🟢 Aceptado</span>
-              <span *ngSwitchCase="'realizado'">🏁 Realizado</span>
-              <span *ngSwitchCase="'rechazado'">❌ Rechazado</span>
-              <span *ngSwitchCase="'cancelado'">🚫 Cancelado</span>
+              <span *ngSwitchCase="'pendiente'">Pendiente</span>
+              <span *ngSwitchCase="'confirmado'">Confirmado</span>
+              <span *ngSwitchCase="'aceptado'">Aceptado</span>
+              <span *ngSwitchCase="'realizado'">Realizado</span>
+              <span *ngSwitchCase="'rechazado'">Rechazado</span>
+              <span *ngSwitchCase="'cancelado'">Cancelado</span>
               <span *ngSwitchDefault>{{ turno.estado | titlecase }}</span>
             </ng-container>
           </span>
         </td>
         <td>
-          <!-- PACIENTE: Cancelar, Ver Reseña, Encuesta, Calificar -->
+          <!-- PACIENTE: Cancelar, Ver Reseña, Encuesta -->
           <ng-container *ngIf="esPaciente">
             <span *ngIf="turno.estado === 'pendiente' || turno.estado === 'confirmado'">
-              <button class="btn-cancelar" (click)="abrirModalCancelar(turno)">❌ Cancelar</button>
+              <button class="btn-cancelar" (click)="abrirModalCancelar(turno)">Cancelar</button>
             </span>
             <span *ngIf="turno.estado === 'realizado' && turno.resena">
-              <button class="btn-ver" (click)="abrirModalResena(turno)">⭐ Ver Reseña</button>
+              <button class="btn-ver" (click)="abrirModalResena(turno)">Ver Reseña</button>
             </span>
             <span *ngIf="turno.estado === 'realizado' && !turno.encuestaCompletada">
-              <button class="btn-encuesta">📝Encuesta</button>
-            </span>
-            <span *ngIf="turno.estado === 'realizado' && !turno.calificacion">
-              <button class="btn-calificar">🌟 Calificar</button>
+              <button class="btn-encuesta" (click)="abrirModalEncuesta(turno)">Encuesta</button>
             </span>
           </ng-container>
           <!-- ESPECIALISTA: Aceptar, Rechazar, Cancelar, Finalizar, Ver Reseña -->
           <ng-container *ngIf="esEspecialista">
             <span *ngIf="(turno.estado === 'pendiente')">
-              <button class="btn-aceptar" (click)="aceptarTurno(turno)">✅ Aceptar</button>
-              <button class="btn-rechazar" (click)="abrirModalRechazar(turno)">🗑️ Rechazar</button>
+              <button class="btn-aceptar" (click)="aceptarTurno(turno)">Aceptar</button>
+              <button class="btn-rechazar" (click)="abrirModalRechazar(turno)">Rechazar</button>
             </span>
             <span *ngIf="(turno.estado === 'aceptado')">
-              <button class="btn-cancelar" (click)="abrirModalCancelar(turno)">❌ Cancelar</button>
-              <button class="btn-finalizar" (click)="abrirModalFinalizar(turno)">🏁 Finalizar</button>
+              <button class="btn-cancelar" (click)="abrirModalCancelar(turno)">Cancelar</button>
+              <button class="btn-cancelar" (click)="abrirModalFinalizar(turno)">Finalizar</button>
             </span>
             <span *ngIf="turno.resena">
-              <button class="btn-ver" (click)="abrirModalResena(turno)">⭐ Ver Reseña</button>
+              <button class="btn-ver" (click)="abrirModalResena(turno)">Ver Reseña</button>
+            </span>
+            <span *ngIf="turno.encuestaCompletada">
+              <button class="btn-ver" (click)="abrirModalVerEncuesta(turno)">Ver Encuesta</button>
             </span>
           </ng-container>
           <ng-container *ngIf="esAdmin">
             <span *ngIf="puedeCancelarAdmin(turno)">
-              <button class="btn-cancelar" (click)="abrirModalCancelar(turno)">❌ Cancelar</button>
+              <button class="btn-cancelar" (click)="abrirModalCancelar(turno)">Cancelar</button>
             </span>
             <span *ngIf="(turno.estado === 'cancelado' && turno.comentarioCancelacion)">
-              <button class="btn-ver" (click)="abrirModalMotivo(turno)">📝 Ver Motivo</button>
+              <button class="btn-ver" (click)="abrirModalMotivo(turno)">Ver Motivo</button>
             </span>
           </ng-container>
         </td>
@@ -126,13 +129,37 @@
   <div class="modal-cancelar" *ngIf="mostrarModalFinalizar">
     <div class="modal-content">
       <h3>Finalizar turno</h3>
-      <p>Por favor, ingresa una reseña o comentario de la consulta:</p>
-      <textarea [(ngModel)]="resenaFinal" rows="3" placeholder="Comentario o diagnóstico..." class="textarea-motivo"></textarea>
-      <div *ngIf="errorMotivo" class="error-motivo">{{ errorMotivo }}</div>
-      <div class="modal-actions">
-        <button (click)="confirmarFinalizacion()" class="btn-finalizar-modal">Finalizar</button>
-        <button (click)="cerrarModalFinalizar()" class="btn-cerrar-modal">Cerrar</button>
-      </div>
+      <form (ngSubmit)="confirmarFinalizacion()" autocomplete="off">
+        <div class="historia-clinica-section">
+          <h4>Historia Clínica</h4>
+          <div class="datos-fijos">
+            <label>Altura (cm): <input type="number" [(ngModel)]="altura" name="altura" required min="0" /></label>
+            <label>Peso (kg): <input type="number" [(ngModel)]="peso" name="peso" required min="0" /></label>
+            <label>Temperatura (°C): <input type="number" [(ngModel)]="temperatura" name="temperatura" required min="0" step="0.1" /></label>
+            <label>Presión: <input type="text" [(ngModel)]="presion" name="presion" required /></label>
+          </div>
+          <div class="datos-dinamicos">
+            <label>Dato:</label>
+            <input type="text" [(ngModel)]="claveDinamica" name="claveDinamica" maxlength="20" />
+            <input type="text" [(ngModel)]="valorDinamico" name="valorDinamico" maxlength="30"/>
+            <button type="button" (click)="agregarDatoDinamico()" [disabled]="datosDinamicos.length >= 3">Agregar</button>
+          </div>
+          <div class="chips-dinamicos">
+            <span class="chip-dinamico" *ngFor="let dato of datosDinamicos; let i = index">
+              {{dato.clave}}: {{dato.valor}}
+              <button type="button" (click)="eliminarDatoDinamico(i)">x</button>
+            </span>
+          </div>
+        </div>
+        <p>Por favor, ingresa una reseña o comentario de la consulta:</p>
+        <textarea [(ngModel)]="resenaFinal" name="resenaFinal" rows="3" placeholder="Comentario o diagnóstico..." class="textarea-motivo" required></textarea>
+        <div *ngIf="errorMotivo" class="error-motivo">{{ errorMotivo }}</div>
+        <div *ngIf="errorHistoriaClinica" class="error-motivo">{{ errorHistoriaClinica }}</div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-finalizar-modal">Finalizar</button>
+          <button type="button" (click)="cerrarModalFinalizar()" class="btn-cerrar-modal">Cerrar</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -154,6 +181,49 @@
       <p class="resena-texto">{{ motivoAMostrar }}</p>
       <div class="modal-actions">
         <button (click)="cerrarModalMotivo()" class="btn-cerrar-modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal encuesta -->
+  <div class="modal-cancelar" *ngIf="mostrarModalEncuesta">
+    <div class="modal-content">
+      <h3>Encuesta sobre la atención</h3>
+      <form (ngSubmit)="confirmarEncuesta()" autocomplete="off">
+        <label for="comentarioEncuesta">Comentario para el médico:</label>
+        <textarea id="comentarioEncuesta" [(ngModel)]="comentarioEncuesta" name="comentarioEncuesta" rows="3" placeholder="Escribe tu comentario..." class="textarea-motivo" required></textarea>
+        <div class="estrellas-encuesta">
+          <label>Calificación:</label>
+          <ng-container *ngFor="let star of [1,2,3,4,5]">
+            <span (click)="estrellasEncuesta = star" [class.selected]="estrellasEncuesta >= star" class="estrella">★</span>
+          </ng-container>
+        </div>
+        <div *ngIf="errorEncuesta" class="error-motivo">{{ errorEncuesta }}</div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-finalizar-modal">Enviar</button>
+          <button type="button" (click)="cerrarModalEncuesta()" class="btn-cerrar-modal">Cerrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal ver encuesta (solo especialista) -->
+  <div class="modal-cancelar" *ngIf="mostrarModalVerEncuesta">
+    <div class="modal-content">
+      <h3>Encuesta del paciente</h3>
+      <div class="ver-encuesta-contenido">
+        <div class="ver-encuesta-estrellas">
+          <ng-container *ngFor="let star of [1,2,3,4,5]">
+            <span class="estrella" [class.selected]="star <= encuestaEstrellasVer">★</span>
+          </ng-container>
+        </div>
+        <div class="ver-encuesta-comentario">
+          <strong>Comentario:</strong>
+          <p>{{ encuestaComentarioVer }}</p>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button (click)="cerrarModalVerEncuesta()" class="btn-cerrar-modal">Cerrar</button>
       </div>
     </div>
   </div>

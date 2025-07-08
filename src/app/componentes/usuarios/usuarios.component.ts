@@ -5,6 +5,8 @@ import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, sendEmailV
 import { getFirestore, collection, getDocs, setDoc, doc, updateDoc, getDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { CommonModule } from '@angular/common';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-usuarios',
@@ -34,6 +36,10 @@ export class UsuariosComponent implements OnInit {
 
   adminError: string = '';
   adminSuccess: string = '';
+
+  historiaClinicaTurnos: any[] = [];
+  mostrarModalHistoriaClinica: boolean = false;
+  pacienteHistoriaSeleccionado: any = null;
 
   constructor(private router: Router) {}
 
@@ -149,5 +155,71 @@ export class UsuariosComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       this.adminImagen = input.files[0];
     }
+  }
+
+  async verHistoriaClinica(paciente: any) {
+    this.pacienteHistoriaSeleccionado = paciente;
+    this.historiaClinicaTurnos = [];
+    this.mostrarModalHistoriaClinica = true;
+    const db = getFirestore();
+    const turnosSnap = await getDocs(collection(db, 'Turnos'));
+    this.historiaClinicaTurnos = turnosSnap.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter((turno: any) => turno.pacienteId === paciente.uid && turno.estado === 'realizado');
+  }
+
+  cerrarModalHistoriaClinica() {
+    this.mostrarModalHistoriaClinica = false;
+    this.pacienteHistoriaSeleccionado = null;
+    this.historiaClinicaTurnos = [];
+  }
+
+  tieneHistoriaClinica(u: any): boolean {
+    // Solo para pacientes
+    return u.tipo === 'paciente' && !!u.historiaClinica;
+  }
+
+  // Descargar Excel de todos los usuarios
+  exportarUsuariosExcel() {
+    const data = this.usuarios.map(u => ({
+      Tipo: u.tipo,
+      Nombre: u.nombre,
+      Apellido: u.apellido,
+      Correo: u.correo,
+      DNI: u.dni,
+      Edad: u.edad,
+      Estado: u.aprobado !== undefined ? (u.aprobado ? 'Habilitado' : 'Inhabilitado') : ''
+    }));
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Usuarios');
+    const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    saveAs(new Blob([excelBuffer], { type: 'application/octet-stream' }), 'usuarios.xlsx');
+  }
+
+  // Descargar Excel de los turnos de un paciente
+  async exportarTurnosPacienteExcel(paciente: any) {
+    const db = getFirestore();
+    const turnosSnap = await getDocs(collection(db, 'Turnos'));
+    const turnos = turnosSnap.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter((turno: any) => turno.pacienteId === paciente.uid);
+    const data = turnos.map((t: any) => ({
+      Fecha: t.FechaTurno,
+      Horario: t.HorarioTurno,
+      Especialista: (t.especialistaNombre || '') + ' ' + (t.especialistaApellido || ''),
+      Especialidad: t.especialidad,
+      Estado: t.estado,
+      Altura: t.historiaClinica?.altura || '',
+      Peso: t.historiaClinica?.peso || '',
+      Temperatura: t.historiaClinica?.temperatura || '',
+      Presion: t.historiaClinica?.presion || '',
+      DatosDinamicos: t.historiaClinica?.datosDinamicos?.map((d: any) => `${d.clave}: ${d.valor}`).join('; ') || ''
+    }));
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'TurnosPaciente');
+    const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    saveAs(new Blob([excelBuffer], { type: 'application/octet-stream' }), `turnos_${paciente.nombre}_${paciente.apellido}.xlsx`);
   }
 }

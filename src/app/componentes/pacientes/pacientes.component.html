@@ -1,0 +1,59 @@
+<div class="pacientes-bg"></div>
+
+<div *ngIf="cargando" class="cargando">Cargando pacientes atendidos...</div>
+
+<div *ngIf="!cargando && !pacienteSeleccionado">
+  <h2 class="titulo-centrado">Pacientes atendidos</h2>
+  <div *ngIf="pacientesAtendidos.length === 0" class="texto-centrado">Aún no has atendido pacientes.</div>
+  <div class="lista-pacientes">
+    <div class="paciente-card" *ngFor="let paciente of pacientesAtendidos">
+      <div class="paciente-header">
+        <img *ngIf="paciente.pacienteImagen" [src]="paciente.pacienteImagen" alt="Foto paciente" class="foto-paciente">
+        <div class="datos-paciente">
+          <strong>{{ paciente.pacienteNombre }} {{ paciente.pacienteApellido }}</strong>
+        </div>
+      </div>
+      
+      <div class="ultimos-turnos">
+        <h4>Últimos turnos:</h4>
+        <div *ngIf="paciente.ultimosTurnos.length === 0" class="sin-turnos">
+          No hay turnos registrados
+        </div>
+        <div *ngFor="let turno of paciente.ultimosTurnos" class="turno-item">
+          <span class="fecha-turno">{{ turno.FechaTurno }}</span>
+          <span class="hora-turno">{{ turno.HorarioTurno }}</span>
+        </div>
+      </div>
+      
+      <button class="btn-ver-historia" (click)="verHistoriaClinica(paciente)">Ver historia clínica</button>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="pacienteSeleccionado" class="historia-container">
+  <button class="btn-cerrar" (click)="cerrarHistoriaClinica()">
+    <span class="icono-cerrar">&#8592;</span> Cerrar historia clínica
+  </button>
+  <h2 class="titulo-historia">Historia clínica de {{ pacienteSeleccionado.pacienteNombre }} {{ pacienteSeleccionado.pacienteApellido }}</h2>
+  <div *ngIf="historiaClinica.length === 0" class="texto-centrado">No hay atenciones registradas.</div>
+  <div *ngFor="let turno of historiaClinica" class="turno-historia">
+    <div class="fecha-turno texto-centrado">
+      <strong>Fecha:</strong> {{ turno.FechaTurno }} - <strong>Hora:</strong> {{ turno.HorarioTurno }}
+    </div>
+    <div class="datos-fijos texto-centrado">
+      <span><strong>Altura:</strong> {{ turno.historiaClinica?.altura || '-' }} cm</span>
+      <span><strong>Peso:</strong> {{ turno.historiaClinica?.peso || '-' }} kg</span>
+      <span><strong>Temperatura:</strong> {{ turno.historiaClinica?.temperatura || '-' }} °C</span>
+      <span><strong>Presión:</strong> {{ turno.historiaClinica?.presion || '-' }}</span>
+    </div>
+    <div *ngIf="turno.historiaClinica?.datosDinamicos?.length > 0" class="datos-dinamicos texto-centrado">
+      <strong>Datos adicionales:</strong>
+      <ul>
+        <li *ngFor="let dato of turno.historiaClinica.datosDinamicos">
+          <strong>{{ dato.clave }}:</strong> {{ dato.valor }}
+        </li>
+      </ul>
+    </div>
+    <hr>
+  </div>
+</div>

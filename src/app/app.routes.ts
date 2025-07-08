@@ -7,6 +7,7 @@ import { UsuariosComponent } from './componentes/usuarios/usuarios.component';
 import { SacarTurnoComponent } from './componentes/sacar-turno/sacar-turno.component';
 import { MiPerfilComponent } from './componentes/mi-perfil/mi-perfil.component';
 import { MisTurnosComponent } from './componentes/mis-turnos/mis-turnos.component';
+import { PacientesComponent } from './componentes/pacientes/pacientes.component';
 
 
 
@@ -20,6 +21,7 @@ export const routes: Routes = [
     { path: 'miPerfil', component: MiPerfilComponent },
     { path: 'misTurnos', component: MisTurnosComponent },
     { path: 'turnos', component: MisTurnosComponent },
+    { path: 'pacientes', component: PacientesComponent },
 
     { path: '**', component: PageNotFoundComponent },
 ];
