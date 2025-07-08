@@ -7,6 +7,7 @@ import { Auth, user, User } from '@angular/fire/auth';
 import { Observable, firstValueFrom } from 'rxjs';
 import { collectionData } from '@angular/fire/firestore';
 import jsPDF from 'jspdf';
+import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 
 interface Especialista {
   id: string;
@@ -28,7 +29,7 @@ interface HorarioDisponibilidad {
 @Component({
   selector: 'app-mi-perfil',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, FormatoFechaPipe],
   templateUrl: './mi-perfil.component.html',
   styleUrl: './mi-perfil.component.css'
 })

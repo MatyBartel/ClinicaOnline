@@ -8,11 +8,12 @@ import { SacarTurnoComponent } from './componentes/sacar-turno/sacar-turno.compo
 import { MiPerfilComponent } from './componentes/mi-perfil/mi-perfil.component';
 import { MisTurnosComponent } from './componentes/mis-turnos/mis-turnos.component';
 import { PacientesComponent } from './componentes/pacientes/pacientes.component';
+import { EstadisticasComponent } from './componentes/estadisticas/estadisticas.component';
 
 
 
 export const routes: Routes = [
-    { path: '', redirectTo: '/home', pathMatch: "full" },
+    { path: '', redirectTo: '/login', pathMatch: "full" },
     { path: 'home', component: HomeComponent },
     { path: 'login', component: LoginComponent },
     { path: 'registro', component: RegistroComponent },
@@ -22,6 +23,7 @@ export const routes: Routes = [
     { path: 'misTurnos', component: MisTurnosComponent },
     { path: 'turnos', component: MisTurnosComponent },
     { path: 'pacientes', component: PacientesComponent },
+    { path: 'estadisticas', component: EstadisticasComponent },
 
     { path: '**', component: PageNotFoundComponent },
 ];

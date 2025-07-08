@@ -6,13 +6,6 @@
   </div>
   <input type="text" [(ngModel)]="filtro" (input)="aplicarFiltro()" placeholder="🔎 Buscar por especialidad o {{esPaciente ? 'especialista' : 'paciente'}}..." class="filtro-input" />
 
-  <!-- Botón limpiar rechazados -->
-  <div *ngIf="esEspecialista && tieneRechazados()" class="limpiar-rechazados-container">
-    <button class="btn-limpiar-rechazados" (click)="limpiarRechazados()">
-      <span class="emoji-tacho"></span> Limpiar Rechazados
-    </button>
-  </div>
-
   <div *ngIf="turnosFiltrados.length === 0" class="mensaje-vacio">
     <span *ngIf="esPaciente">🙁 No tienes turnos para mostrar.</span>
     <span *ngIf="esEspecialista">🙁 No tienes turnos asignados.</span>
@@ -39,7 +32,7 @@
         <td *ngIf="esEspecialista">{{ turno.pacienteNombre || '' }} {{ turno.pacienteApellido || '' }}</td>
         <td *ngIf="esAdmin">{{ turno.pacienteNombre || '' }} {{ turno.pacienteApellido || '' }}</td>
         <td *ngIf="esAdmin">{{ turno.especialistaNombre || '' }} {{ turno.especialistaApellido || '' }}</td>
-        <td>{{ turno.FechaTurno }}</td>
+        <td>{{ turno.FechaTurno | formatoFecha:'customDiaMesAnioDia' }}</td>
         <td>{{ turno.HorarioTurno }}</td>
         <td>
           <span class="estado-{{ turno.estado }}">

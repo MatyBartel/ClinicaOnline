@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { firebaseConfig } from '../../../firebaseConfig';
@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoadingService } from '../../servicios/loading.service';
 import { TransicionService } from '../../servicios/transicion.service';
+import { LogService } from '../../servicios/log.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,12 @@ export class LoginComponent {
   auth = getAuth(this.app);
   db = getFirestore(this.app);
 
-  constructor(private router: Router, private loadingService: LoadingService, private transicionService: TransicionService) {}
+  constructor(
+    private router: Router, 
+    private loadingService: LoadingService, 
+    private transicionService: TransicionService,
+    private logService: LogService
+  ) {}
 
   fillPaciente1() {
     this.username = 'manuelPaciente1@gmail.com';
@@ -73,38 +79,43 @@ export class LoginComponent {
       if (especialistaDoc.exists()) {
         const userData = especialistaDoc.data();
         if (userData['aprobado']) {
+          await this.logService.registrarIngreso(userData['nombre'] + ' ' + userData['apellido'], 'Especialista');
           this.transicionService.transicionConDuracion({
             tipoUsuario: 'especialista',
             mensaje: 'Iniciando sesión como Especialista...'
           }, 2000);
-          
           setTimeout(() => {
+            this.transicionService.ocultarTransicion();
             this.router.navigate(['/miPerfil']);
             this.loginStatusChange.emit(true);
           }, 2000);
         } else {
           this.errorMessage = 'Tu cuenta de especialista aún no fue habilitada por un administrador.';
           this.loginStatusChange.emit(false);
+          await signOut(this.auth);
+          setTimeout(() => {}, 0);
         }
       } else if (pacienteDoc.exists()) {
         const userData = pacienteDoc.data();
+        await this.logService.registrarIngreso(userData['nombre'] + ' ' + userData['apellido'], 'Paciente');
         this.transicionService.transicionConDuracion({
           tipoUsuario: 'paciente',
           mensaje: 'Iniciando sesión como Paciente...'
         }, 2000);
-        
         setTimeout(() => {
+          this.transicionService.ocultarTransicion();
           this.router.navigate(['/sacarTurno']);
           this.loginStatusChange.emit(true);
         }, 2000);
       } else if (adminDoc.exists()) {
         const userData = adminDoc.data();
+        await this.logService.registrarIngreso(userData['nombre'] + ' ' + userData['apellido'], 'Administrador');
         this.transicionService.transicionConDuracion({
           tipoUsuario: 'admin',
           mensaje: 'Iniciando sesión como Administrador...'
         }, 2000);
-        
         setTimeout(() => {
+          this.transicionService.ocultarTransicion();
           this.router.navigate(['/usuarios']);
           this.loginStatusChange.emit(true);
         }, 2000);

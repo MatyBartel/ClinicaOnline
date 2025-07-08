@@ -2,11 +2,12 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Firestore, collection, collectionData, query, where } from '@angular/fire/firestore';
 import { getAuth } from 'firebase/auth';
+import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 
 @Component({
   selector: 'app-pacientes',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormatoFechaPipe],
   templateUrl: './pacientes.component.html',
   styleUrl: './pacientes.component.css'
 })
@@ -31,7 +32,6 @@ export class PacientesComponent implements OnInit {
     const turnosRef = collection(this.firestore, 'Turnos');
     const q = query(turnosRef, where('especialistaId', '==', this.uid), where('estado', '==', 'realizado'));
     collectionData(q, { idField: 'id' }).subscribe((turnos: any[]) => {
-      // Agrupo por pacienteId
       const pacientesMap: { [key: string]: any } = {};
       turnos.forEach(turno => {
         if (!pacientesMap[turno.pacienteId]) {
@@ -53,7 +53,6 @@ export class PacientesComponent implements OnInit {
           return fechaB - fechaA;
         });
         
-        // Tomar solo los últimos 3 turnos
         paciente.ultimosTurnos = turnosOrdenados.slice(0, 3);
       });
       

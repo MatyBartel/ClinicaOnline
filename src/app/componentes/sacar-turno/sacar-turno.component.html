@@ -27,8 +27,8 @@
     <div *ngIf="especialidadSeleccionada && !diaSeleccionado" class="dias-step">
       <h3 class="step-title">Selecciona un día</h3>
       <div class="dias-lista">
-        <button *ngFor="let dia of diasDisponibles" (click)="seleccionarDia(dia)" class="dia-btn">
-          {{ dia }}
+        <button *ngFor="let dia of diasDisponibles" (click)="seleccionarDia(dia)" class="dia-btn" [ngClass]="{'selected': diaSeleccionado === dia}">
+          {{ dia.split(' ')[0] | formatoFecha:'corta' }} <span style="font-size:0.9em; color:#888;">({{ dia.split('(')[1]?.replace(')','') }})</span>
         </button>
     </div>
     </div>
@@ -36,7 +36,7 @@
     <!-- Paso 4: Selección de horario -->
     <div *ngIf="diaSeleccionado && !horarioSeleccionado" class="horarios-lista">
       <h3>Selecciona un horario</h3>
-      <button *ngFor="let hora of horariosDisponibles" 
+      <button *ngFor="let hora of horasDisponibles" 
               (click)="seleccionarHorario(hora)" 
               class="horario-btn" 
               [disabled]="!esHorarioDisponible(hora)"
@@ -51,7 +51,9 @@
       <p>
         Profesional: <b>{{ profesionalSeleccionado?.nombre }}</b><br>
         Especialidad: <b>{{ especialidadSeleccionada?.nombre }}</b><br>
-        Día: <b>{{ diaSeleccionado }}</b><br>
+        <span *ngIf="diaSeleccionado">
+          Día: <b>{{ diaSeleccionado.split(' ')[0] | formatoFecha:'customDiaMesAnioDia' }}</b><br>
+        </span>
         Horario: <b>{{ horarioSeleccionado }}</b>
       </p>
     </div>
@@ -64,7 +66,6 @@
       </select>
     </div>
 
-    <!-- Botón único de solicitar turno al final del formulario, solo visible si hay horario seleccionado -->
     <div class="solicitar-turno-footer" style="text-align:center; margin-top: 32px;" *ngIf="horarioSeleccionado">
       <button class="confirmar-btn" (click)="solicitarTurno()" [disabled]="!horarioSeleccionado || enviando">Solicitar Turno</button>
       <div *ngIf="mensajeExito" class="mensaje-exito">{{ mensajeExito }}</div>

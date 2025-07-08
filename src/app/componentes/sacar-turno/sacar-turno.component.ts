@@ -5,6 +5,7 @@ import { Firestore, collection, collectionData, query, where, getDocs, addDoc, d
 import { map } from 'rxjs/operators';
 import { getAuth } from 'firebase/auth';
 import { firstValueFrom } from 'rxjs';
+import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 
 interface Especialista {
   id: string;
@@ -38,7 +39,7 @@ interface Especialidad {
 @Component({
   selector: 'app-sacar-turno',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormatoFechaPipe],
   templateUrl: './sacar-turno.component.html',
   styleUrl: './sacar-turno.component.css'
 })
@@ -198,10 +199,13 @@ export class SacarTurnoComponent implements OnInit {
     const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
     const diasDisponiblesSemana = Array.from(new Set(this.horariosEspecialista.map(h => h.dia)));
     const hoy = new Date();
+    hoy.setHours(0,0,0,0); 
     const dias: string[] = [];
     for (let i = 0; i < 15; i++) {
       const fecha = new Date(hoy);
       fecha.setDate(hoy.getDate() + i);
+      fecha.setHours(0,0,0,0); 
+      if (fecha < hoy) continue; 
       const nombreDia = diasSemana[fecha.getDay()];
       if (diasDisponiblesSemana.includes(nombreDia)) {
         const fechaStr = fecha.toISOString().slice(0, 10) + ' (' + nombreDia + ')';
@@ -227,7 +231,6 @@ export class SacarTurnoComponent implements OnInit {
       return;
     }
 
-    // Validar que el horario sigue disponible
     const turnosRef = collection(this.firestore, 'Turnos');
     const q = query(
       turnosRef,
@@ -244,7 +247,6 @@ export class SacarTurnoComponent implements OnInit {
       return;
     }
 
-    // Obtener datos del paciente (nombre y apellido)
     let pacienteNombre = '';
     let pacienteApellido = '';
     try {
@@ -256,7 +258,6 @@ export class SacarTurnoComponent implements OnInit {
       }
     } catch {}
 
-    // Obtener datos del especialista (nombre y apellido)
     let especialistaNombre = '';
     let especialistaApellido = '';
     if (this.profesionalSeleccionado) {
@@ -298,38 +299,67 @@ export class SacarTurnoComponent implements OnInit {
     this.especialidadSeleccionada = null;
     this.diaSeleccionado = null;
     this.horarioSeleccionado = null;
-    // Simula días disponibles
-    this.diasDisponibles = ['09-09-2021', '10-09-2021', '11-09-2021'];
+    this.diasDisponibles = [];
+    this.horasDisponibles = [];
+    this.horariosEspecialista = [];
+    this.turnoForm.patchValue({ especialidad: '', dia: '', hora: '' });
   }
 
   seleccionarEspecialidad(esp: Especialidad) {
     this.especialidadSeleccionada = esp;
     this.diaSeleccionado = null;
     this.horarioSeleccionado = null;
-    // Simula días disponibles
-    this.diasDisponibles = ['09-09-2021', '10-09-2021', '11-09-2021'];
+    this.diasDisponibles = [];
+    this.horasDisponibles = [];
+    this.horariosEspecialista = [];
+    this.turnoForm.patchValue({ dia: '', hora: '' });
+    this.cargarHorariosEspecialista();
+  }
+
+  async cargarHorariosEspecialista() {
+    if (!this.profesionalSeleccionado || !this.especialidadSeleccionada) return;
+    const horariosRef = collection(this.firestore, 'Horarios');
+    const q = query(horariosRef, where('especialistaId', '==', this.profesionalSeleccionado.id), where('especialidad', '==', this.especialidadSeleccionada.nombre));
+    const snapshot = await getDocs(q);
+    this.horariosEspecialista = snapshot.docs.map(doc => doc.data());
+    this.diasDisponibles = this.getDiasDisponiblesProximos15();
+    this.horasDisponibles = [];
+    this.turnoForm.patchValue({ dia: '', hora: '' });
   }
 
   async seleccionarDia(dia: string) {
     this.diaSeleccionado = dia;
     this.horarioSeleccionado = null;
-    // Simula horarios disponibles
-    this.horariosDisponibles = ['08:00am', '09:30am', '11:00am', '12:15pm'];
-
-    // Cargar horarios reservados reales
+    this.turnoForm.patchValue({ hora: '' });
+    const match = /^\d{4}-\d{2}-\d{2} \(([^)]+)\)$/.exec(dia);
+    const nombreDia = match ? match[1] : '';
+    const horasPosibles = this.horariosEspecialista.filter(h => h.dia === nombreDia).map(h => h.hora);
+    const hoy = new Date();
+    const fechaSeleccionada = new Date(dia.split(' ')[0]);
+    let horasFiltradas = horasPosibles;
+    if (hoy.toISOString().slice(0, 10) === fechaSeleccionada.toISOString().slice(0, 10)) {
+      const horaActual = hoy.getHours() + hoy.getMinutes() / 60;
+      horasFiltradas = horasPosibles.filter(hora => {
+        const [h, m] = hora.split(':').map(Number);
+        const horaNum = h + m / 60;
+        return horaNum > horaActual;
+      });
+    }
+    let horariosReservados: string[] = [];
     if (this.profesionalSeleccionado && this.especialidadSeleccionada) {
       const turnosRef = collection(this.firestore, 'Turnos');
       const q = query(
         turnosRef,
         where('especialistaId', '==', this.profesionalSeleccionado.id),
         where('especialidad', '==', this.especialidadSeleccionada.nombre),
-        where('FechaTurno', '==', dia)
+        where('FechaTurno', '==', dia.split(' ')[0])
       );
       const snapshot = await getDocs(q);
-      this.horariosReservados = snapshot.docs.map(doc => doc.data()['HorarioTurno']);
-    } else {
-      this.horariosReservados = [];
+      horariosReservados = snapshot.docs.map(doc => doc.data()['HorarioTurno']);
     }
+    // Guardar todos los horarios posibles y los reservados
+    this.horasDisponibles = horasFiltradas.length > 0 ? horasFiltradas : horasPosibles;
+    this.horariosReservados = horariosReservados;
   }
 
   esHorarioDisponible(hora: string): boolean {
@@ -337,7 +367,6 @@ export class SacarTurnoComponent implements OnInit {
   }
 
   async seleccionarHorario(horario: string) {
-    // Verifica si ya existe un turno reservado para este profesional, especialidad, día y horario
     const turnosRef = collection(this.firestore, 'Turnos');
     const q = query(
       turnosRef,
@@ -348,7 +377,6 @@ export class SacarTurnoComponent implements OnInit {
     );
     const snapshot = await getDocs(q);
     if (!snapshot.empty) {
-      // No mostrar mensaje de error aquí, solo no permitir seleccionar
       return;
     }
     this.horarioSeleccionado = horario;
@@ -356,9 +384,7 @@ export class SacarTurnoComponent implements OnInit {
   }
 
   confirmarTurno() {
-    // Aquí iría la lógica para guardar el turno
     alert(`Turno reservado con ${this.profesionalSeleccionado?.nombre} - ${this.especialidadSeleccionada?.nombre} el ${this.diaSeleccionado} a las ${this.horarioSeleccionado}`);
-    // Reinicia el flujo
     this.profesionalSeleccionado = null;
     this.especialidadSeleccionada = null;
     this.diaSeleccionado = null;

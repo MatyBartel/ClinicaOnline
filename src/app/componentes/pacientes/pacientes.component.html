@@ -20,7 +20,7 @@
           No hay turnos registrados
         </div>
         <div *ngFor="let turno of paciente.ultimosTurnos" class="turno-item">
-          <span class="fecha-turno">{{ turno.FechaTurno }}</span>
+          <span class="fecha-turno">{{ turno.FechaTurno | formatoFecha:'customDiaMesAnioDia' }}</span>
           <span class="hora-turno">{{ turno.HorarioTurno }}</span>
         </div>
       </div>
@@ -38,7 +38,7 @@
   <div *ngIf="historiaClinica.length === 0" class="texto-centrado">No hay atenciones registradas.</div>
   <div *ngFor="let turno of historiaClinica" class="turno-historia">
     <div class="fecha-turno texto-centrado">
-      <strong>Fecha:</strong> {{ turno.FechaTurno }} - <strong>Hora:</strong> {{ turno.HorarioTurno }}
+      <strong>Fecha:</strong> {{ turno.FechaTurno | formatoFecha:'customDiaMesAnioDia' }} - <strong>Hora:</strong> {{ turno.HorarioTurno }}
     </div>
     <div class="datos-fijos texto-centrado">
       <span><strong>Altura:</strong> {{ turno.historiaClinica?.altura || '-' }} cm</span>

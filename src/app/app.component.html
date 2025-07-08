@@ -4,6 +4,7 @@
             <div class="button-group">
                 <button routerLink="home" routerLinkActive="active-route">INICIO</button>
                 <button *ngIf="esAdmin" routerLink="usuarios" routerLinkActive="active-route">USUARIOS</button>
+                <button *ngIf="esAdmin" routerLink="estadisticas" routerLinkActive="active-route">ESTADÍSTICAS</button>
                 <button *ngIf="esEspecialista || esPaciente" routerLink="miPerfil" routerLinkActive="active-route">MI PERFIL</button>
                 <button *ngIf="esEspecialista" routerLink="misTurnos" routerLinkActive="active-route">MIS TURNOS</button>
                 <button *ngIf="esPaciente" routerLink="misTurnos" routerLinkActive="active-route">MIS TURNOS</button>
@@ -28,10 +29,8 @@
         </div>
     </div>
 
-    <!-- Loading Spinner Global -->
     <app-loading-spinner></app-loading-spinner>
     
-    <!-- Transición Global -->
     <app-transicion-global></app-transicion-global>
 </body>
 

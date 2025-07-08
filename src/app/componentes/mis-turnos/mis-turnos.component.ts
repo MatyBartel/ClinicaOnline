@@ -1,13 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Firestore, collection, collectionData, query, where, updateDoc, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, query, where, updateDoc, doc, getDoc, deleteDoc } from '@angular/fire/firestore';
 import { getAuth } from 'firebase/auth';
+import { FormatoFechaPipe } from '../../pipes/formato-fecha.pipe';
 
 @Component({
   selector: 'app-mis-turnos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FormatoFechaPipe],
   templateUrl: './mis-turnos.component.html',
   styleUrl: './mis-turnos.component.css'
 })
@@ -36,7 +37,6 @@ export class MisTurnosComponent implements OnInit {
   mostrarModalMotivo: boolean = false;
   motivoAMostrar: string = '';
 
-  // Variables para historia clínica
   altura: string = '';
   peso: string = '';
   temperatura: string = '';
@@ -80,7 +80,7 @@ export class MisTurnosComponent implements OnInit {
     } else if (this.esEspecialista) {
       q = query(turnosRef, where('especialistaId', '==', this.uid));
     } else if (this.esAdmin) {
-      q = turnosRef; // Todos los turnos
+      q = turnosRef;
     }
     if (q) {
       collectionData(q, { idField: 'id' }).subscribe((turnos: any[]) => {
@@ -98,13 +98,11 @@ export class MisTurnosComponent implements OnInit {
     }
     this.turnosFiltrados = this.turnos.filter(turno => {
       let texto = '';
-      // Concatenar todos los campos principales del turno
       for (const key in turno) {
         if (typeof turno[key] === 'string' || typeof turno[key] === 'number') {
           texto += ' ' + turno[key];
         }
       }
-      // Incluir historia clínica si existe
       if (turno.historiaClinica) {
         texto += ' ' + (turno.historiaClinica.altura || '');
         texto += ' ' + (turno.historiaClinica.peso || '');
@@ -120,7 +118,6 @@ export class MisTurnosComponent implements OnInit {
     });
   }
 
-  // --- ACCIONES PARA PACIENTE ---
   abrirModalCancelar(turno: any) {
     this.turnoAOperar = turno;
     this.motivoOperacion = '';
@@ -147,7 +144,6 @@ export class MisTurnosComponent implements OnInit {
     await this.cargarTurnos();
   }
 
-  // --- ACCIONES PARA ESPECIALISTA ---
   abrirModalRechazar(turno: any) {
     this.turnoAOperar = turno;
     this.motivoOperacion = '';
@@ -185,7 +181,6 @@ export class MisTurnosComponent implements OnInit {
     this.resenaFinal = '';
     this.errorMotivo = '';
     this.mostrarModalFinalizar = true;
-    // Limpiar historia clínica
     this.altura = '';
     this.peso = '';
     this.temperatura = '';
@@ -272,12 +267,10 @@ export class MisTurnosComponent implements OnInit {
     this.turnoAOperar = null;
   }
 
-  // Acción cancelar turno para admin
   puedeCancelarAdmin(turno: any): boolean {
     return this.esAdmin && !['aceptado', 'realizado', 'rechazado'].includes(turno.estado);
   }
 
-  // Métodos para datos dinámicos
   agregarDatoDinamico() {
     if (this.claveDinamica.trim() && this.valorDinamico.trim() && this.datosDinamicos.length < 3) {
       this.datosDinamicos.push({ clave: this.claveDinamica.trim(), valor: this.valorDinamico.trim() });
@@ -336,5 +329,14 @@ export class MisTurnosComponent implements OnInit {
     this.mostrarModalVerEncuesta = false;
     this.encuestaComentarioVer = '';
     this.encuestaEstrellasVer = 0;
+  }
+
+  async borrarRechazados() {
+    const rechazados = this.turnosFiltrados.filter(t => t.estado === 'rechazado');
+    for (const turno of rechazados) {
+      const turnoRef = doc(this.firestore, 'Turnos', turno.id);
+      await deleteDoc(turnoRef);
+    }
+    await this.cargarTurnos();
   }
 } 

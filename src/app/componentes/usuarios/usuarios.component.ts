@@ -175,11 +175,9 @@ export class UsuariosComponent implements OnInit {
   }
 
   tieneHistoriaClinica(u: any): boolean {
-    // Solo para pacientes
     return u.tipo === 'paciente' && !!u.historiaClinica;
   }
 
-  // Descargar Excel de todos los usuarios
   exportarUsuariosExcel() {
     const data = this.usuarios.map(u => ({
       Tipo: u.tipo,
@@ -197,7 +195,6 @@ export class UsuariosComponent implements OnInit {
     saveAs(new Blob([excelBuffer], { type: 'application/octet-stream' }), 'usuarios.xlsx');
   }
 
-  // Descargar Excel de los turnos de un paciente
   async exportarTurnosPacienteExcel(paciente: any) {
     const db = getFirestore();
     const turnosSnap = await getDocs(collection(db, 'Turnos'));

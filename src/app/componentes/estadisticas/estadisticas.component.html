@@ -1,0 +1,177 @@
+<div class="estadisticas-container">
+  <header class="header">
+    <h1>Panel de Estadísticas</h1>
+    <p>Informes y gráficos para administradores</p>
+  </header>
+
+  <div class="loading-spinner" *ngIf="cargando">
+    <div class="spinner"></div>
+    <p>Cargando estadísticas...</p>
+  </div>
+
+<!-- INGRESOS -->
+
+  <div class="content" *ngIf="!cargando">
+    <section class="stats-section">
+      <div class="section-header">
+        <h2>Ingresos al Sistema</h2>
+        <div class="export-buttons">
+          <button class="btn btn-excel" (click)="exportarLogIngresosExcel()">
+            Exportar Excel
+          </button>
+          <button class="btn btn-danger" (click)="borrarTodosLosLogs()" style="margin-left:8px;">
+            Borrar Logs
+          </button>
+          <span appTooltip="¡Cuidado! Esto eliminará todos los logs de ingresos de manera permanente." style="margin-left:4px; cursor:pointer; font-size:1.2em; vertical-align:middle;">ℹ️</span>
+        </div>
+      </div>
+      
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let log of logIngresos" appHighlight appTooltip="Click para resaltar" tooltipPosition="top">
+              <td>{{ log.usuario || 'N/A' }}</td>
+              <td>{{ log.fecha | formatoFecha:'corta' }}</td>
+              <td>{{ log.hora || 'N/A' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Turnos por Especialidad -->
+    <section class="stats-section">
+      <div class="section-header">
+        <h2>Turnos por Especialidad</h2>
+        <div class="export-buttons">
+          <button class="btn btn-excel" (click)="exportarTurnosPorEspecialidadExcel()">
+            Exportar Excel
+          </button>
+        </div>
+      </div>
+      
+      <div class="data-table">
+        <div id="graficoTortaEspecialidad" style="width: 100%; max-width: 320px; margin: 0 auto 24px auto;"></div>
+      </div>
+    </section>
+
+    <!-- Turnos por Día -->
+    <section class="stats-section">
+      <div class="section-header">
+        <h2>Turnos por Día</h2>
+        <div class="export-buttons">
+          <button class="btn btn-excel" (click)="exportarTurnosPorDiaExcel()">
+            Exportar Excel
+          </button>
+        </div>
+      </div>
+      
+      <div class="data-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Día</th>
+              <th>Cantidad de Turnos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of turnosPorDia" appHighlight appTooltip="Cantidad de turnos por día" tooltipPosition="left">
+              <td>{{ item.dia | formatoFecha:'customDiaMesAnioDia' }}</td>
+              <td>{{ item.cantidad }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Turnos por Médico -->
+    <section class="stats-section">
+      <div class="section-header">
+        <h2>Turnos por Médico</h2>
+      </div>
+      
+      <div class="filters">
+        <div class="filter-group">
+          <label for="medico">Médico:</label>
+          <select id="medico" [(ngModel)]="medicoSeleccionado" (change)="onMedicoChange()">
+            <option value="">Seleccionar médico</option>
+            <option *ngFor="let medico of medicos" [value]="medico.id">
+              {{ medico.nombre }} {{ medico.apellido }}
+            </option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label for="fechaInicio">Fecha Inicio:</label>
+          <input type="date" id="fechaInicio" [(ngModel)]="fechaInicio" (change)="onFechaChange()">
+        </div>
+        
+        <div class="filter-group">
+          <label for="fechaFin">Fecha Fin:</label>
+          <input type="date" id="fechaFin" [(ngModel)]="fechaFin" (change)="onFechaChange()">
+        </div>
+      </div>
+
+      <!-- Turnos Solicitados -->
+      <div class="subsection">
+        <h3>Turnos Solicitados</h3>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Paciente</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Estado</th>
+                <th>Especialidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let turno of turnosPorMedico">
+                <td>{{ turno.pacienteNombre || 'N/A' }}</td>
+                <td>{{ turno.FechaTurno | formatoFecha:'corta' }}</td>
+                <td>{{ turno.HorarioTurno || 'N/A' }}</td>
+                <td [ngClass]="(turno.estado | estadoTurno).clase + (turno.estado === 'rechazado' ? ' estado-rechazado' : '')">{{ (turno.estado | estadoTurno).texto }}</td>
+                <td>{{ turno.especialidad || 'N/A' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Turnos Finalizados -->
+      <div class="subsection">
+        <h3>Turnos Finalizados</h3>
+        <div class="data-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Paciente</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Estado</th>
+                <th>Especialidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let turno of turnosFinalizadosPorMedico">
+                <td>{{ turno.pacienteNombre || 'N/A' }}</td>
+                <td>{{ turno.FechaTurno | formatoFecha:'corta' }}</td>
+                <td>{{ turno.HorarioTurno || 'N/A' }}</td>
+                <td [ngClass]="(turno.estado | estadoTurno).clase + (turno.estado === 'rechazado' ? ' estado-rechazado' : '')">{{ (turno.estado | estadoTurno).texto }}</td>
+                <td>{{ turno.especialidad || 'N/A' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+</div> 

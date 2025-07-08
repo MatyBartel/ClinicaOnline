@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { getAuth, createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendEmailVerification, signOut } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { Router } from '@angular/router';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -28,6 +28,7 @@ export class RegistroComponent implements OnInit {
   obraSocial: string = '';
   nuevaEspecialidad: string = '';
   errorMessage: string = '';
+  mensajeExito: string = '';
 
   mostrarFormularioRegistro: boolean = false;
 
@@ -233,7 +234,17 @@ export class RegistroComponent implements OnInit {
 
       await setDoc(userDoc, userData);
 
-      this.router.navigate(['/login']);
+      await signOut(auth);
+
+      if (this.tipoSeleccionado === 'especialista') {
+        this.mensajeExito = 'Registro exitoso. Tu cuenta debe ser aprobada por un administrador antes de poder iniciar sesión.';
+      } else {
+        this.mensajeExito = 'Registro exitoso. Por favor, inicia sesión para continuar.';
+      }
+
+      setTimeout(() => {
+        this.router.navigate(['/login']);
+      }, 2000);
     } catch (error: any) {
       if (error.code === 'auth/invalid-email') {
         this.errorMessage = 'El formato del correo es inválido.';
