@@ -3,27 +3,18 @@ import { HomeComponent } from './componentes/home/home.component';
 import { PageNotFoundComponent } from './componentes/page-not-found/page-not-found.component';
 import { LoginComponent } from './componentes/login/login.component';
 import { RegistroComponent } from './componentes/registro/registro.component';
-import { UsuariosComponent } from './componentes/usuarios/usuarios.component';
-import { SacarTurnoComponent } from './componentes/sacar-turno/sacar-turno.component';
-import { MiPerfilComponent } from './componentes/mi-perfil/mi-perfil.component';
-import { MisTurnosComponent } from './componentes/mis-turnos/mis-turnos.component';
-import { PacientesComponent } from './componentes/pacientes/pacientes.component';
-import { EstadisticasComponent } from './componentes/estadisticas/estadisticas.component';
-
-
 
 export const routes: Routes = [
     { path: '', redirectTo: '/login', pathMatch: "full" },
     { path: 'home', component: HomeComponent },
     { path: 'login', component: LoginComponent },
     { path: 'registro', component: RegistroComponent },
-    { path: 'usuarios', component: UsuariosComponent },
-    { path: 'sacarTurno', component: SacarTurnoComponent },
-    { path: 'miPerfil', component: MiPerfilComponent },
-    { path: 'misTurnos', component: MisTurnosComponent },
-    { path: 'turnos', component: MisTurnosComponent },
-    { path: 'pacientes', component: PacientesComponent },
-    { path: 'estadisticas', component: EstadisticasComponent },
-
+    { path: 'usuarios', loadChildren: () => import('./componentes/usuarios/usuarios.module').then(m => m.UsuariosModule) },
+    { path: 'sacarTurno', loadChildren: () => import('./componentes/sacar-turno/sacar-turno.module').then(m => m.SacarTurnoModule) },
+    { path: 'miPerfil', loadChildren: () => import('./componentes/mi-perfil/mi-perfil.module').then(m => m.MiPerfilModule) },
+    { path: 'misTurnos', loadChildren: () => import('./componentes/mis-turnos/mis-turnos.module').then(m => m.MisTurnosModule) },
+    { path: 'turnos', loadChildren: () => import('./componentes/mis-turnos/mis-turnos.module').then(m => m.MisTurnosModule) },
+    { path: 'pacientes', loadChildren: () => import('./componentes/pacientes/pacientes.module').then(m => m.PacientesModule) },
+    { path: 'estadisticas', loadChildren: () => import('./componentes/estadisticas/estadisticas.module').then(m => m.EstadisticasModule) },
     { path: '**', component: PageNotFoundComponent },
 ];
