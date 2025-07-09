@@ -45,7 +45,15 @@ La Clínica Bartel es un centro de salud que ofrece atención médica en diversa
 - Listado de turnos solicitados (paciente) o asignados (especialista).
 - Estado de cada turno y acciones disponibles.
 
-### 8. **Página de Error / No Encontrado**
+### 8. **Estadisticas**
+- Podemos encontrar las estadisticas de los ingresos, turnos por dia, turnos por lapso de tiempo y mas.
+- Se aplico grafico de tortas con NGX-CHARTS.
+
+### 9. **Pacientes (para especialistas)**
+- Podemos encontrar las historias clinicas de los atendidos con ese especialista.
+- Se pueden ver los ultimos 3 turnos de cada uno con el.
+
+### 10. **Página de Error / No Encontrado**
 - Mensaje amigable cuando se accede a una ruta inexistente.
 
 ---
@@ -59,7 +67,8 @@ La Clínica Bartel es un centro de salud que ofrece atención médica en diversa
   - Paciente: Accede desde el menú "Sacar Turno" o "Mis Turnos".
   - Especialista: Accede desde "Mis Turnos" para ver y gestionar los turnos asignados.
 - **Gestión de Usuarios:** Solo visible para administradores desde el menú principal.
-- **Mi Perfil:** Accesible desde el menú superior o lateral.
+- **Mi Perfil:** Accesible desde el menú superior para especialistas y pacientes.
+- **Estadisticas:** Accesible desde el menú superior para los admins.
 
 ---
 
@@ -73,14 +82,15 @@ La Clínica Bartel es un centro de salud que ofrece atención médica en diversa
 - **Mi Perfil:** Datos personales, imagen, especialidades y horarios.
 - **Mis Turnos:** Listado de turnos con estado y acciones.
 - **Página de Error:** Mensaje de ruta no encontrada.
-
+- **Historia Clínica:** Se puede ver en Mi Perfil (para los pacientes) o Pacientes (para los especialistas)
+- **Estadísticas:** Puede verlas el admin, ingresos, turnos de cada dia, especialidad mas elegida, etc.
 ---
 
 ## 👤 Tipos de Usuario
 
-- **Paciente:** Puede registrarse, solicitar turnos, ver y cancelar sus turnos.
-- **Especialista:** Puede registrarse, definir especialidades y horarios, ver y gestionar turnos asignados.
-- **Administrador:** Puede ver y gestionar todos los usuarios, asignar roles y especialidades.
+- **Paciente:** Puede registrarse, solicitar turnos, ver y cancelar sus turnos, descargar su historia clinica en pdf.
+- **Especialista:** Puede registrarse, definir especialidades y horarios, ver y gestionar turnos asignados, ver historias clinicas de los pacientes atendidos en un lapso de tiempo.
+- **Administrador:** Puede ver y gestionar todos los usuarios, asignar roles y especialidades, seccion estadisticas.
 
 ---
 
@@ -89,4 +99,7 @@ La Clínica Bartel es un centro de salud que ofrece atención médica en diversa
 - **Firebase** (Auth, Firestore, Storage)
 - **ngx-captcha** (reCAPTCHA v2)
 - **HTML5, CSS3**
+- jsPDF (Exportar PDF)
+- XLSX (Exportar Excel)
+- NGX-CHARTS (Graficos)
 ---
